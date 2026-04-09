@@ -27,7 +27,6 @@ h1 {
     padding: 25px;
     border-radius: 20px;
     width: 70%;
-    backdrop-filter: blur(15px);
 }
 
 ul {
@@ -36,18 +35,17 @@ ul {
 }
 
 li {
-    margin: 10px 0;
+    margin: 15px 0;
 }
 
-.btn {
-    margin-top: 20px;
+/* حركة الأيقونات فقط */
+h2 span {
     display: inline-block;
-    padding: 12px 25px;
-    border-radius: 25px;
-    background: white;
-    color: #c471ed;
-    font-weight: bold;
-    text-decoration: none;
+    transition: 0.3s;
+}
+
+h2 span:hover {
+    transform: scale(1.3) rotate(10deg);
 }
 </style>
 
@@ -61,14 +59,14 @@ li {
 <p>Future Network & Cybersecurity Specialist</p>
 
 <div class="card">
-<h2>👩‍💻 About Me</h2>
+<h2><span>👩‍💻</span> About Me</h2>
 <p>
 I am Ikram, a student in network and cybersecurity, passionate about protecting systems and learning new technologies.
 </p>
 </div>
 
 <div class="card">
-<h2>💪 Skills</h2>
+<h2><span>💪</span> Skills</h2>
 <ul>
 <li>Networking</li>
 <li>Cybersecurity Basics</li>
@@ -78,31 +76,56 @@ I am Ikram, a student in network and cybersecurity, passionate about protecting 
 </div>
 
 <div class="card">
-<h2>📂 My Projects</h2>
+<h2><span>📂</span> My Technical Projects</h2>
+
 <ul>
+
 <li>
-<b>Network Design (Packet Tracer)</b><br>
-I created and tested a small network using routers and switches.
+<b>Linux System Administration</b><br>
+I worked on Linux systems and practiced command-line operations.<br><br>
+Navigation: ls, cd, pwd<br>
+File Management: mkdir, rm, cp, mv<br>
+Permissions: chmod, chown<br>
+Networking: ping, ip a
 </li>
 
 <li>
-<b>IP Configuration</b><br>
-I configured IP addresses and tested communication using ping.
+<b>Python Basics</b><br>
+I learned programming fundamentals using Python.<br><br>
+Variables, conditions, loops, and functions.
 </li>
 
 <li>
-<b>Linux Practice</b><br>
-I practiced basic commands like ls, cd, mkdir.
+<b>LDAP Configuration (Linux)</b><br>
+I explored LDAP for centralized authentication and user management.<br><br>
+slapd, ldapadd, ldapsearch<br>
+Understanding DN, entries, attributes.
 </li>
 
-<li>
-<b>Cybersecurity Basics</b><br>
-I learned about passwords and system protection.
-</li>
 </ul>
-</div>
+<div class="card">
+<h2><span>📞</span> Contact Me</h2>
 
-<a href="#" class="btn">Contact Me</a>
+<p>
+📧 Email: <a href="mailto:ikrambelhadjer7@email.com">ikram@email.com</a>
+</p>
+
+<p>
+💬 WhatsApp: 
+<a href="https://wa.me/213542031929" target="_blank">
+Chat with me
+</a>
+</p>
+
+<p>
+💼 LinkedIn: 
+<a href="https://linkedin.com/in/ikram Belhadjer" target="_blank">
+My Profile
+</a>
+</p>
+
+</div>
+</div>
 
 </div>
 
