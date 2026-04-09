@@ -8,44 +8,89 @@
 body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #ff9a9e, #c471ed, #6a11cb);
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4, #c471ed, #6a11cb);
     color: white;
     text-align: center;
 }
 
-.container {
-    padding: 40px;
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    padding: 20px;
+    font-weight: bold;
 }
 
-h1 {
-    font-size: 45px;
-}
-
-.card {
-    background: rgba(255,255,255,0.15);
-    margin: 30px auto;
-    padding: 25px;
-    border-radius: 20px;
-    width: 70%;
-}
-
-ul {
-    list-style: none;
-    padding: 0;
-}
-
-li {
-    margin: 15px 0;
-}
-
-/* حركة الأيقونات فقط */
-h2 span {
-    display: inline-block;
+.navbar a {
+    color: white;
+    text-decoration: none;
     transition: 0.3s;
 }
 
-h2 span:hover {
-    transform: scale(1.3) rotate(10deg);
+.navbar a:hover {
+    color: #ffd6ff;
+}
+
+/* Container */
+.container {
+    padding: 60px;
+}
+
+/* Title animation */
+h1 {
+    font-size: 50px;
+    animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+    from { text-shadow: 0 0 10px white; }
+    to { text-shadow: 0 0 25px #ff4b7d; }
+}
+
+/* Card */
+.card {
+    background: rgba(255,255,255,0.15);
+    padding: 30px;
+    margin: 30px auto;
+    border-radius: 20px;
+    width: 70%;
+    backdrop-filter: blur(15px);
+    animation: fadeIn 1.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    margin: 10px;
+    padding: 12px 25px;
+    border-radius: 25px;
+    background: white;
+    color: #c471ed;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #c471ed;
+    color: white;
+    transform: scale(1.1);
+}
+
+/* Emoji animation */
+.emoji {
+    display: inline-block;
+    transition: 0.4s;
+}
+
+.emoji:hover {
+    transform: scale(1.4) rotate(10deg);
 }
 </style>
 
@@ -53,78 +98,58 @@ h2 span:hover {
 
 <body>
 
+<!-- Navbar -->
+<div class="navbar">
+<a href="index.html">🏠 Home</a>
+<a href="linux.html">🐧 Linux</a>
+<a href="python.html">🐍 Python</a>
+<a href="ldap.html">🔐 LDAP</a>
+<a href="cv.html">📄 CV</a>
+</div>
+
 <div class="container">
 
-<h1>Ikram 💖</h1>
+<h1><span class="emoji">💖</span> Ikram</h1>
 <p>Future Network & Cybersecurity Specialist</p>
 
+<!-- About -->
 <div class="card">
-<h2><span>👩‍💻</span> About Me</h2>
+<h2><span class="emoji">👩‍💻</span> About Me</h2>
 <p>
-I am Ikram, a student in network and cybersecurity, passionate about protecting systems and learning new technologies.
+I am Ikram, a passionate student in networking and cybersecurity. I enjoy learning new technologies and protecting systems.
 </p>
 </div>
 
+<!-- Explore -->
 <div class="card">
-<h2><span>💪</span> Skills</h2>
-<ul>
-<li>Networking</li>
-<li>Cybersecurity Basics</li>
-<li>Linux</li>
-<li>Python Basics</li>
-</ul>
+<h2><span class="emoji">🚀</span> Explore My Work</h2>
+
+<a href="linux.html" class="btn">🐧 Linux</a>
+<a href="python.html" class="btn">🐍 Python</a>
+<a href="ldap.html" class="btn">🔐 LDAP</a>
+
 </div>
 
+<!-- Contact -->
 <div class="card">
-<h2><span>📂</span> My Technical Projects</h2>
+<h2><span class="emoji">📞</span> Contact Me</h2>
 
-<ul>
-
-<li>
-<b>Linux System Administration</b><br>
-I worked on Linux systems and practiced command-line operations.<br><br>
-Navigation: ls, cd, pwd<br>
-File Management: mkdir, rm, cp, mv<br>
-Permissions: chmod, chown<br>
-Networking: ping, ip a
-</li>
-
-<li>
-<b>Python Basics</b><br>
-I learned programming fundamentals using Python.<br><br>
-Variables, conditions, loops, and functions.
-</li>
-
-<li>
-<b>LDAP Configuration (Linux)</b><br>
-I explored LDAP for centralized authentication and user management.<br><br>
-slapd, ldapadd, ldapsearch<br>
-Understanding DN, entries, attributes.
-</li>
-
-</ul>
-<div class="card">
-<h2><span>📞</span> Contact Me</h2>
-
-<p>
-📧 Email: <a href="mailto:ikrambelhadjer7@email.com">ikram@email.com</a>
+<p>📧 Email: 
+<a href="mailto:ikrambelhadjer7@email.com" style="color:white;">ikram@email.com</a>
 </p>
 
-<p>
-💬 WhatsApp: 
-<a href="https://wa.me/213542031929" target="_blank">
-Chat with me
+<p>💬 WhatsApp: 
+<a href="https://wa.me/213542031929" target="_blank" style="color:white;">
+Send Message
 </a>
 </p>
 
-<p>
-💼 LinkedIn: 
-<a href="https://linkedin.com/in/ikram Belhadjer" target="_blank">
+<p>💼 LinkedIn: 
+<a href="https://linkedin.com/in/ikram Belhadjer" target="_blank" style="color:white;">
 My Profile
 </a>
 </p>
 
-</div>
 </div>
 
 </div>
