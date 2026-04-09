@@ -13,40 +13,14 @@ body {
     text-align: center;
 }
 
-/* Navbar */
-.navbar {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    padding: 20px;
-    font-weight: bold;
-}
-
-.navbar a {
-    color: white;
-    text-decoration: none;
-    transition: 0.3s;
-}
-
-.navbar a:hover {
-    color: #ffd6ff;
-}
-
-/* Main */
 .container {
     padding: 40px;
 }
 
 h1 {
     font-size: 45px;
-    margin-bottom: 10px;
 }
 
-p {
-    opacity: 0.9;
-}
-
-/* Cards */
 .card {
     background: rgba(255,255,255,0.15);
     margin: 30px auto;
@@ -54,16 +28,17 @@ p {
     border-radius: 20px;
     width: 70%;
     backdrop-filter: blur(15px);
-    box-shadow: 0 0 20px rgba(255,255,255,0.2);
-    transition: 0.4s;
 }
 
-.card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 30px rgba(255,255,255,0.5);
+ul {
+    list-style: none;
+    padding: 0;
 }
 
-/* Button */
+li {
+    margin: 10px 0;
+}
+
 .btn {
     margin-top: 20px;
     display: inline-block;
@@ -73,12 +48,6 @@ p {
     color: #c471ed;
     font-weight: bold;
     text-decoration: none;
-    transition: 0.3s;
-}
-
-.btn:hover {
-    background: #c471ed;
-    color: white;
 }
 </style>
 
@@ -86,31 +55,51 @@ p {
 
 <body>
 
-<div class="navbar">
-    <a href="#">Home</a>
-    <a href="#">About</a>
-    <a href="#">Skills</a>
-    <a href="#">Projects</a>
-</div>
-
 <div class="container">
 
 <h1>Ikram 💖</h1>
-<p>Future Network & Cybersecurity Administrator</p>
+<p>Future Network & Cybersecurity Specialist</p>
 
 <div class="card">
-    <h2>👩‍💻 About Me</h2>
-    <p>I am Ikram, a networking and cybersecurity student passionate about protecting systems and learning new technologies.</p>
+<h2>👩‍💻 About Me</h2>
+<p>
+I am Ikram, a student in network and cybersecurity, passionate about protecting systems and learning new technologies.
+</p>
 </div>
 
 <div class="card">
-    <h2>💪 Skills</h2>
-    <p>Networking • Cybersecurity • Linux</p>
+<h2>💪 Skills</h2>
+<ul>
+<li>Networking</li>
+<li>Cybersecurity Basics</li>
+<li>Linux</li>
+<li>Python Basics</li>
+</ul>
 </div>
 
 <div class="card">
-    <h2>📂 Projects</h2>
-    <p>Coming soon...</p>
+<h2>📂 My Projects</h2>
+<ul>
+<li>
+<b>Network Design (Packet Tracer)</b><br>
+I created and tested a small network using routers and switches.
+</li>
+
+<li>
+<b>IP Configuration</b><br>
+I configured IP addresses and tested communication using ping.
+</li>
+
+<li>
+<b>Linux Practice</b><br>
+I practiced basic commands like ls, cd, mkdir.
+</li>
+
+<li>
+<b>Cybersecurity Basics</b><br>
+I learned about passwords and system protection.
+</li>
+</ul>
 </div>
 
 <a href="#" class="btn">Contact Me</a>
