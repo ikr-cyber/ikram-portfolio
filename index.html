@@ -4,7 +4,11 @@
 <meta charset="UTF-8">
 <title>Ikram Portfolio</title>
 
+<!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
+
+<!-- Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
 body{
@@ -15,39 +19,29 @@ body{
   overflow-x:hidden;
 }
 
-/* زر الوضع */
-#themeToggle{
+/* النجوم */
+#stars{
   position:fixed;
-  top:20px;
-  left:20px;
-  background:#ff4d88;
-  border:none;
-  border-radius:50%;
-  padding:10px;
-  cursor:pointer;
+  width:100%;
+  height:100%;
+  z-index:-1;
 }
 
-/* القائمة */
-.menu{
-  position:fixed;
-  right:20px;
-  top:100px;
-  background:#1a1a2e;
-  border-radius:20px;
-  padding:10px;
-}
-
-.menu div{
-  padding:15px;
-  color:#aaa;
-  cursor:pointer;
-}
-
-.menu div:hover{
+/* الاسم */
+.name{
+  font-family:'Pacifico';
+  font-size:70px;
   color:#ff4d88;
+  text-align:center;
+  animation:glow 2s infinite alternate;
 }
 
-/* الصفحة الرئيسية */
+@keyframes glow{
+  from{ text-shadow:0 0 10px #ff4d88; }
+  to{ text-shadow:0 0 30px #ff99bb; }
+}
+
+/* الصفحة */
 .home{
   height:100vh;
   display:flex;
@@ -57,26 +51,8 @@ body{
   text-align:center;
 }
 
-h3{
-  color:#aaa;
-}
-
-.name{
-  font-family:'Pacifico';
-  font-size:70px;
-  color:#ff4d88;
-  animation:glow 2s infinite alternate;
-}
-
-@keyframes glow{
-  from{ text-shadow:0 0 10px #ff4d88; }
-  to{ text-shadow:0 0 30px #ff99bb; }
-}
-
-/* كتابة تتحرك */
 .typing{
   color:#a855f7;
-  font-size:20px;
   border-right:2px solid #a855f7;
   white-space:nowrap;
   overflow:hidden;
@@ -86,10 +62,10 @@ h3{
 
 @keyframes typing{
   from{ width:0; }
-  to{ width:300px; }
+  to{ width:320px; }
 }
 
-/* كروت */
+/* الأزرار */
 .cards{
   display:flex;
   gap:20px;
@@ -108,26 +84,52 @@ h3{
   transform:scale(1.1);
 }
 
-/* وضع فاتح */
-body.light{
-  background:#f5f5f5;
-  color:black;
+/* أيقونات التواصل */
+.social{
+  margin-top:30px;
+}
+
+.social i{
+  border:2px solid #ff4d88;
+  border-radius:50%;
+  padding:10px;
+  margin:5px;
+  cursor:pointer;
+}
+
+/* القائمة */
+.menu{
+  position:fixed;
+  right:20px;
+  top:100px;
+  background:#1a1a2e;
+  border-radius:20px;
+  padding:10px;
+}
+
+.menu div{
+  padding:15px;
+  color:#aaa;
+}
+
+.menu div:hover{
+  color:#ff4d88;
 }
 </style>
 </head>
 
 <body>
 
-<button id="themeToggle">🌙</button>
+<canvas id="stars"></canvas>
 
 <div class="menu">
-  <div>🏠 Accueil</div>
-  <div>👤 À propos</div>
-  <div>💻 Compétences</div>
-  <div>📁 Projets</div>
-  <div>🎓 Formation</div>
-  <div>⭐ Témoignages</div>
-  <div>📩 Contact</div>
+  <div><i class="fas fa-home"></i> Accueil</div>
+  <div><i class="fas fa-user"></i> À propos</div>
+  <div><i class="fas fa-laptop-code"></i> Compétences</div>
+  <div><i class="fas fa-folder"></i> Projets</div>
+  <div><i class="fas fa-graduation-cap"></i> Formation</div>
+  <div><i class="fas fa-star"></i> Témoignages</div>
+  <div><i class="fas fa-envelope"></i> Contact</div>
 </div>
 
 <section class="home">
@@ -147,18 +149,56 @@ body.light{
   </p>
 
   <div class="cards">
-    <div class="card">Cybersécurité</div>
-    <div class="card">Réseau</div>
-    <div class="card">Développement</div>
+    <div class="card"><i class="fas fa-shield-alt"></i> Cybersécurité</div>
+    <div class="card"><i class="fas fa-network-wired"></i> Réseau</div>
+    <div class="card"><i class="fas fa-code"></i> Développement</div>
   </div>
+
+  <div class="social">
+    <i class="fab fa-linkedin"></i>
+    <i class="fab fa-github"></i>
+    <i class="fas fa-envelope"></i>
+    <i class="fas fa-phone"></i>
+  </div>
+
 </section>
 
 <script>
-const btn = document.getElementById("themeToggle");
+// النجوم
+const canvas = document.getElementById("stars");
+const ctx = canvas.getContext("2d");
 
-btn.onclick = () => {
-  document.body.classList.toggle("light");
-};
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let stars = [];
+
+for(let i=0;i<100;i++){
+  stars.push({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    r: Math.random()*2,
+    s: Math.random()*1
+  });
+}
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle="white";
+
+  stars.forEach(star=>{
+    ctx.beginPath();
+    ctx.arc(star.x,star.y,star.r,0,Math.PI*2);
+    ctx.fill();
+
+    star.y += star.s;
+    if(star.y > canvas.height) star.y=0;
+  });
+
+  requestAnimationFrame(draw);
+}
+
+draw();
 </script>
 
 </body>
