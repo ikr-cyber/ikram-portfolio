@@ -156,6 +156,14 @@ body{
 /* hover effect 🔥 */
 .stat:hover{
   transform:scale(1.1);
+  body.light{
+  background:#f5f5f5 !important;
+  color:black !important;
+}
+
+body.light canvas{
+  display:none;
+}
 }
 </style>
 </head>
@@ -248,6 +256,7 @@ draw();
 </script>
 
   <script>
+<script>
 let btn = document.getElementById("themeToggle");
 
 btn.onclick = function(){
@@ -257,8 +266,8 @@ btn.onclick = function(){
     btn.innerHTML = "☀️";
   }else{
     btn.innerHTML = "🌙";
-  
-});
+  }
+};
 </script>
 
 </body>
