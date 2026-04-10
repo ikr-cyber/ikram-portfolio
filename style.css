@@ -172,3 +172,25 @@
     50% { transform: translateY(-8px); }
     100% { transform: translateY(0px); }
 }
+.job {
+    color: #777;
+    margin-top: 10px;
+    font-size: 18px;
+    animation: slide 3s infinite alternate ease-in-out;
+}
+
+/* الحركة */
+@keyframes slide {
+    0% {
+        transform: translateX(-20px);
+        opacity: 0.5;
+    }
+    50% {
+        transform: translateX(20px);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(-20px);
+        opacity: 0.5;
+    }
+}
