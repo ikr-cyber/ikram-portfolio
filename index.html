@@ -2,153 +2,164 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Portfolio Ikram</title>
+<title>Ikram Portfolio</title>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
 
 <style>
-
-body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: #f8f8f8;
+body{
+  margin:0;
+  font-family:Poppins;
+  background:#0d0d1a;
+  color:white;
+  overflow-x:hidden;
 }
 
-/* ===== SIDEBAR ===== */
-.sidebar {
-    position: fixed;
-    right: 20px;
-    top: 30%;
-    background: white;
-    padding: 10px;
-    border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+/* زر الوضع */
+#themeToggle{
+  position:fixed;
+  top:20px;
+  left:20px;
+  background:#ff4d88;
+  border:none;
+  border-radius:50%;
+  padding:10px;
+  cursor:pointer;
 }
 
-.sidebar a {
-    display: block;
-    text-align: center;
-    padding: 12px;
-    margin: 10px 0;
-    border-radius: 12px;
-    color: #777;
-    transition: 0.3s;
+/* القائمة */
+.menu{
+  position:fixed;
+  right:20px;
+  top:100px;
+  background:#1a1a2e;
+  border-radius:20px;
+  padding:10px;
 }
 
-.sidebar a:hover {
-    background: #ff5ca8;
-    color: white;
+.menu div{
+  padding:15px;
+  color:#aaa;
+  cursor:pointer;
 }
 
-/* ===== INTRO ===== */
-.intro {
-    text-align: center;
-    padding: 100px 20px;
+.menu div:hover{
+  color:#ff4d88;
 }
 
-/* Avatar */
-.avatar {
-    width: 160px;
-    height: 160px;
-    margin: auto;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #ff5ca8, #ff8ecf);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 60px;
-    color: white;
-    position: relative;
-    box-shadow: 0 10px 30px rgba(255, 92, 168, 0.4);
-    animation: pulse 2s infinite;
+/* الصفحة الرئيسية */
+.home{
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
 }
 
-.status {
-    position: absolute;
-    bottom: -10px;
-    background: white;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 13px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+h3{
+  color:#aaa;
 }
 
-.dot {
-    width: 8px;
-    height: 8px;
-    background: green;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 5px;
+.name{
+  font-family:'Pacifico';
+  font-size:70px;
+  color:#ff4d88;
+  animation:glow 2s infinite alternate;
 }
 
-/* Text */
-.hello {
-    margin-top: 30px;
-    color: gray;
+@keyframes glow{
+  from{ text-shadow:0 0 10px #ff4d88; }
+  to{ text-shadow:0 0 30px #ff99bb; }
 }
 
-.name {
-    font-size: 60px;
-    color: #ff5ca8;
-    font-weight: bold;
-    letter-spacing: 3px;
+/* كتابة تتحرك */
+.typing{
+  color:#a855f7;
+  font-size:20px;
+  border-right:2px solid #a855f7;
+  white-space:nowrap;
+  overflow:hidden;
+  width:0;
+  animation:typing 4s steps(30) infinite alternate;
 }
 
-.stars {
-    font-size: 25px;
-    margin-top: 10px;
-    animation: float 2s infinite alternate;
+@keyframes typing{
+  from{ width:0; }
+  to{ width:300px; }
 }
 
-/* Animations */
-@keyframes pulse {
-    0% { transform: scale(1); }
-    100% { transform: scale(1.05); }
+/* كروت */
+.cards{
+  display:flex;
+  gap:20px;
+  margin-top:30px;
 }
 
-@keyframes float {
-    from { transform: translateY(0); }
-    to { transform: translateY(-10px); }
+.card{
+  padding:15px 25px;
+  border-radius:20px;
+  background:#ff4d88;
+  cursor:pointer;
+  transition:0.3s;
 }
 
+.card:hover{
+  transform:scale(1.1);
+}
+
+/* وضع فاتح */
+body.light{
+  background:#f5f5f5;
+  color:black;
+}
 </style>
 </head>
 
 <body>
 
-<!-- ===== SIDEBAR ===== -->
-<div class="sidebar">
-    <a href="#"><i class="fa fa-home"></i></a>
-    <a href="#"><i class="fa fa-user"></i></a>
-    <a href="#"><i class="fa fa-code"></i></a>
-    <a href="#"><i class="fa fa-folder"></i></a>
-    <a href="#"><i class="fa fa-graduation-cap"></i></a>
-    <a href="#"><i class="fa fa-envelope"></i></a>
+<button id="themeToggle">🌙</button>
+
+<div class="menu">
+  <div>🏠 Accueil</div>
+  <div>👤 À propos</div>
+  <div>💻 Compétences</div>
+  <div>📁 Projets</div>
+  <div>🎓 Formation</div>
+  <div>⭐ Témoignages</div>
+  <div>📩 Contact</div>
 </div>
 
-<!-- ===== INTRO ===== -->
-<div class="intro">
+<section class="home">
+  <h3>Bonjour je suis</h3>
 
-    <div class="avatar">
-        <i class="fa fa-user-shield"></i>
+  <h1 class="name">Belhadjer Ikram</h1>
 
-        <div class="status">
-            <span class="dot"></span> Disponible
-        </div>
-    </div>
+  ✨
 
-    <p class="hello">Bonjour, je suis</p>
+  <div class="typing">
+    Étudiante en gestion des systèmes réseau
+  </div>
 
-    <h1 class="name">IKRAM</h1>
-    
-    <p class="job">
-    Administration & Sécurité des Réseaux
-</p>
+  <p>
+    Passionnée par la cybersécurité et l'administration réseau,
+    je conçois des solutions sécurisées et innovantes.
+  </p>
 
-    <div class="stars">✨</div>
+  <div class="cards">
+    <div class="card">Cybersécurité</div>
+    <div class="card">Réseau</div>
+    <div class="card">Développement</div>
+  </div>
+</section>
 
-</div>
+<script>
+const btn = document.getElementById("themeToggle");
+
+btn.onclick = () => {
+  document.body.classList.toggle("light");
+};
+</script>
 
 </body>
 </html>
