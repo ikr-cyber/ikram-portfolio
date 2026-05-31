@@ -39,10 +39,8 @@
     transition: background 0.4s, color 0.4s;
   }
 
-  /* ===== STARS ===== */
   #stars { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
 
-  /* ===== LOADER ===== */
   #loader {
     position: fixed; inset: 0; background: #0a0a1a;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -57,17 +55,15 @@
   .loader-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--pink), var(--purple-light)); border-radius: 10px; transition: width 0.05s; }
   #loader-pct { color: var(--pink); font-size: 1rem; margin-top: 10px; }
 
-  /* ===== THEME TOGGLE ===== */
   #themeToggle {
     position: fixed; top: 20px; left: 20px;
     background: linear-gradient(135deg, var(--pink), var(--purple));
     border: none; border-radius: 50%; width: 44px; height: 44px;
     cursor: pointer; z-index: 1000; font-size: 1.1rem;
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 0 15px rgba(233,30,140,0.4);
+    box-shadow: 0 0 15px rgba(0,212,255,0.4);
   }
 
-  /* ===== NAV ===== */
   nav {
     position: fixed; right: 20px; top: 50%; transform: translateY(-50%);
     background: var(--bg-card); border: 1px solid var(--border);
@@ -80,22 +76,21 @@
     text-decoration: none; border-radius: 12px; font-size: 0.82rem;
     transition: all 0.3s;
   }
-  nav a:hover, nav a.active { color: var(--pink); background: rgba(233,30,140,0.1); }
+  nav a:hover, nav a.active { color: var(--pink); background: rgba(0,212,255,0.1); }
   nav a i { width: 16px; text-align: center; }
   nav a span { display: none; }
   nav:hover a span { display: inline; }
 
-  /* ===== SECTIONS ===== */
   section { position: relative; z-index: 1; min-height: 100vh; }
 
-  /* ===== HERO ===== */
+  /* HERO */
   #home {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     text-align: center; padding: 2rem;
   }
   .badge {
     display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(233,30,140,0.12); border: 1px solid rgba(233,30,140,0.3);
+    background: rgba(0,212,255,0.12); border: 1px solid rgba(0,212,255,0.3);
     color: var(--pink); padding: 6px 16px; border-radius: 50px; font-size: 0.82rem;
     margin-bottom: 20px;
   }
@@ -112,7 +107,7 @@
   .typing-wrap { font-size: 1.1rem; color: var(--purple-light); margin-bottom: 20px; min-height: 28px; }
   .cursor { border-right: 2px solid var(--purple-light); animation: blink 0.8s infinite; }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-  .hero-desc { max-width: 560px; color: var(--text-muted); line-height: 1.7; margin-bottom: 30px; }
+  .hero-desc { max-width: 580px; color: var(--text-muted); line-height: 1.7; margin-bottom: 30px; }
 
   .stats-row { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-bottom: 30px; }
   .stat-card {
@@ -120,7 +115,7 @@
     border-radius: 16px; padding: 18px 28px; text-align: center; min-width: 120px;
     transition: transform 0.3s, box-shadow 0.3s;
   }
-  .stat-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(233,30,140,0.2); }
+  .stat-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,212,255,0.2); }
   .stat-card h2 { font-size: 1.8rem; color: var(--pink); font-weight: 700; }
   .stat-card p { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
 
@@ -132,16 +127,16 @@
     transition: all 0.3s; font-weight: 500; text-decoration: none;
   }
   .btn-primary { background: linear-gradient(135deg, var(--pink), var(--purple)); color: white; }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(233,30,140,0.4); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,212,255,0.4); }
   .btn-outline { background: transparent; border: 2px solid var(--pink); color: var(--pink); }
-  .btn-outline:hover { background: rgba(233,30,140,0.1); }
+  .btn-outline:hover { background: rgba(0,212,255,0.1); }
 
-  /* ===== SECTION HEADERS ===== */
+  /* SECTION HEADERS */
   .section-header { text-align: center; padding: 80px 2rem 40px; }
   .section-header .tag {
-    display: inline-block; background: rgba(233,30,140,0.12);
+    display: inline-block; background: rgba(0,212,255,0.12);
     color: var(--pink); font-size: 0.78rem; padding: 5px 14px;
-    border-radius: 50px; margin-bottom: 12px; border: 1px solid rgba(233,30,140,0.25);
+    border-radius: 50px; margin-bottom: 12px; border: 1px solid rgba(0,212,255,0.25);
   }
   .section-header h2 {
     font-family: 'Playfair Display', serif;
@@ -153,7 +148,7 @@
   .section-header p { color: var(--text-muted); font-size: 0.92rem; }
   .divider { width: 60px; height: 3px; background: linear-gradient(90deg, var(--pink), var(--purple-light)); border-radius: 2px; margin: 14px auto 0; }
 
-  /* ===== ABOUT ===== */
+  /* ABOUT */
   #about { padding-bottom: 60px; }
   .about-grid {
     max-width: 1000px; margin: 0 auto; padding: 0 2rem;
@@ -176,12 +171,12 @@
   }
   .values-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
   .values-list span {
-    background: rgba(233,30,140,0.1); color: var(--pink);
-    border: 1px solid rgba(233,30,140,0.25); border-radius: 8px;
+    background: rgba(0,212,255,0.1); color: var(--pink);
+    border: 1px solid rgba(0,212,255,0.25); border-radius: 8px;
     padding: 5px 12px; font-size: 0.8rem;
   }
 
-  /* ===== SKILLS ===== */
+  /* SKILLS */
   #skills { padding-bottom: 60px; }
   .skills-grid {
     max-width: 1000px; margin: 0 auto; padding: 0 2rem;
@@ -197,7 +192,7 @@
   .skill-bar { height: 5px; background: rgba(255,255,255,0.08); border-radius: 10px; overflow: hidden; }
   .skill-fill { height: 100%; background: linear-gradient(90deg, var(--pink), var(--purple-light)); border-radius: 10px; width: 0; transition: width 1.2s ease; }
 
-  /* ===== PROJECTS ===== */
+  /* PROJECTS */
   #projects { padding-bottom: 60px; }
   .projects-grid {
     max-width: 1000px; margin: 0 auto; padding: 0 2rem;
@@ -207,14 +202,14 @@
     background: var(--bg-card); border: 1px solid var(--border);
     border-radius: 20px; padding: 24px; transition: all 0.3s;
   }
-  .project-card:hover { transform: translateY(-6px); box-shadow: 0 15px 40px rgba(233,30,140,0.15); border-color: var(--pink); }
-  .project-icon { width: 48px; height: 48px; background: rgba(233,30,140,0.12); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 14px; color: var(--pink); }
+  .project-card:hover { transform: translateY(-6px); box-shadow: 0 15px 40px rgba(0,212,255,0.15); border-color: var(--pink); }
+  .project-icon { width: 48px; height: 48px; background: rgba(0,212,255,0.12); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 14px; color: var(--pink); }
   .project-card h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 8px; }
   .project-card p { color: var(--text-muted); font-size: 0.82rem; line-height: 1.7; margin-bottom: 14px; }
   .project-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-  .project-tags span { background: rgba(124,58,237,0.12); color: var(--purple-light); border: 1px solid rgba(124,58,237,0.25); border-radius: 6px; padding: 3px 10px; font-size: 0.75rem; }
+  .project-tags span { background: rgba(0,153,255,0.12); color: var(--purple-light); border: 1px solid rgba(0,153,255,0.25); border-radius: 6px; padding: 3px 10px; font-size: 0.75rem; }
 
-  /* ===== EDUCATION ===== */
+  /* EDUCATION */
   #education { padding-bottom: 60px; }
   .edu-timeline { max-width: 780px; margin: 0 auto; padding: 0 2rem; position: relative; }
   .edu-timeline::before {
@@ -222,10 +217,7 @@
     width: 2px; background: linear-gradient(180deg, var(--pink), var(--purple-light));
     transform: translateX(-50%);
   }
-  .edu-item {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 30px;
-    margin-bottom: 40px; position: relative;
-  }
+  .edu-item { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px; position: relative; }
   .edu-item:nth-child(odd) .edu-card { grid-column: 1; }
   .edu-item:nth-child(odd) .edu-spacer { grid-column: 2; }
   .edu-item:nth-child(even) .edu-card { grid-column: 2; grid-row: 1; }
@@ -233,27 +225,21 @@
   .edu-dot {
     position: absolute; left: 50%; top: 20px; transform: translateX(-50%);
     width: 14px; height: 14px; background: var(--pink); border-radius: 50%;
-    border: 3px solid var(--bg-dark); box-shadow: 0 0 10px var(--pink);
-    z-index: 2;
+    border: 3px solid var(--bg-dark); box-shadow: 0 0 10px var(--pink); z-index: 2;
   }
-  .edu-card {
-    background: var(--bg-card); border: 1px solid var(--border);
-    border-radius: 16px; padding: 20px;
-  }
+  .edu-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
   .edu-date { font-size: 0.75rem; color: var(--pink); font-weight: 500; margin-bottom: 6px; }
   .edu-card h3 { font-size: 0.92rem; font-weight: 600; margin-bottom: 4px; }
   .edu-card .edu-school { color: var(--purple-light); font-size: 0.82rem; margin-bottom: 8px; }
   .edu-card p { color: var(--text-muted); font-size: 0.8rem; line-height: 1.6; }
-  .cert-grid { max-width: 1000px; margin: 40px auto 0; padding: 0 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
-  .cert-card {
-    background: var(--bg-card); border: 1px solid var(--border);
-    border-radius: 16px; padding: 20px; text-align: center;
-  }
+  .cert-grid { max-width: 1000px; margin: 40px auto 0; padding: 0 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+  .cert-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; text-align: center; }
   .cert-card i { font-size: 1.8rem; color: var(--pink); margin-bottom: 10px; }
   .cert-card h4 { font-size: 0.88rem; font-weight: 600; margin-bottom: 4px; }
   .cert-card p { font-size: 0.78rem; color: var(--text-muted); }
+  .cert-card .cert-date { font-size: 0.72rem; color: var(--pink); margin-top: 6px; font-weight: 500; }
 
-  /* ===== TESTIMONIALS ===== */
+  /* TESTIMONIALS */
   #testimonials { padding-bottom: 60px; }
   .testi-grid { max-width: 900px; margin: 0 auto; padding: 0 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
   .testi-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 24px; }
@@ -264,7 +250,7 @@
   .testi-name { font-size: 0.85rem; font-weight: 600; }
   .testi-role { font-size: 0.75rem; color: var(--text-muted); }
 
-  /* ===== CONTACT ===== */
+  /* CONTACT */
   #contact { padding-bottom: 80px; }
   .contact-wrap { max-width: 900px; margin: 0 auto; padding: 0 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
   .contact-info h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 16px; }
@@ -291,7 +277,6 @@
   .form-group textarea { resize: vertical; min-height: 100px; }
   .char-count { font-size: 0.72rem; color: var(--text-muted); text-align: right; margin-top: 4px; }
 
-  /* ===== FOOTER ===== */
   footer {
     background: var(--bg-card); border-top: 1px solid var(--border);
     text-align: center; padding: 30px 2rem; position: relative; z-index: 1;
@@ -299,7 +284,6 @@
   footer p { color: var(--text-muted); font-size: 0.82rem; }
   footer .footer-name { color: var(--pink); font-weight: 600; }
 
-  /* ===== SCROLL REVEAL ===== */
   .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s, transform 0.7s; }
   .reveal.visible { opacity: 1; transform: none; }
 
@@ -343,13 +327,13 @@
   <h1 class="hero-name">BELHADJER IKRAM</h1>
   <div class="typing-wrap"><span id="typingText"></span><span class="cursor">|</span></div>
   <p class="hero-desc">
-    Passionnée par la cybersécurité et l'administration réseau, je combine rigueur technique
-    et créativité pour concevoir des solutions sécurisées et innovantes.
+    Passionnée par la cybersécurité et l'administration réseau, je combine rigueur technique,
+    expérience internationale et créativité pour concevoir des solutions sécurisées et innovantes.
   </p>
   <div class="stats-row">
-    <div class="stat-card"><h2>5+</h2><p>Projets</p></div>
-    <div class="stat-card"><h2>3</h2><p>Certifications</p></div>
-    <div class="stat-card"><h2>4</h2><p>Langues</p></div>
+    <div class="stat-card"><h2>9+</h2><p>Projets</p></div>
+    <div class="stat-card"><h2>5</h2><p>Certifications</p></div>
+    <div class="stat-card"><h2>5</h2><p>Langues</p></div>
   </div>
   <div class="btn-row">
     <a href="#projects" class="btn btn-primary"><i class="fas fa-rocket"></i> Découvrir mes projets</a>
@@ -371,29 +355,32 @@
         <h3><i class="fas fa-user-circle"></i> Qui suis-je ?</h3>
         <p>
           Étudiante en Administration & Sécurité des Réseaux Informatiques, passionnée par la cybersécurité
-          et les nouvelles technologies. Après un baccalauréat scientifique (Génie des Procédés),
-          j'ai étudié à l'université d'Alger, puis vécu en Turquie de 2020 à 2023 où j'ai acquis
-          une riche expérience professionnelle internationale (secteur médical, immobilier, call center).
-          De retour en Algérie, je me concentre sur ma passion : la cybersécurité et les réseaux.
+          et les nouvelles technologies. Titulaire d'un baccalauréat technique (Génie des Procédés),
+          j'ai vécu en Turquie de 2020 à 2023, acquérant une expérience professionnelle internationale
+          dans les secteurs médical, immobilier et call center, tout en maîtrisant la langue turque.
+          De retour en Algérie, je me concentre sur ma passion : la cybersécurité et les réseaux,
+          avec une approche analytique et interculturelle unique.
         </p>
       </div>
       <div class="about-card reveal">
         <h3><i class="fas fa-bullseye"></i> Projet professionnel</h3>
         <p>
           Je recherche un <strong style="color:var(--pink)">stage ou alternance</strong> en administration réseau
-          et cybersécurité. Mon objectif est de devenir analyste en cybersécurité. En parallèle,
-          je développe des projets web personnels et j'utilise l'IA comme outil de productivité.
+          et cybersécurité. Mon objectif est de devenir <strong style="color:var(--pink)">analyste en cybersécurité</strong>.
+          Mon parcours international m'a donné une capacité d'adaptation et une ouverture culturelle rare
+          dans le domaine technique. En parallèle, je développe des projets web personnels
+          et j'utilise l'IA comme outil de productivité avancé.
         </p>
       </div>
     </div>
     <div>
       <div class="about-card reveal" style="margin-bottom:20px">
         <h3><i class="fas fa-info-circle"></i> Informations</h3>
-        <div class="info-row"><i class="fas fa-map-marker-alt"></i><span>Algérie</span></div>
+        <div class="info-row"><i class="fas fa-map-marker-alt"></i><span>Algérie — Mobilité nationale</span></div>
         <div class="info-row"><i class="fas fa-envelope"></i><span>ikrambelhadjer7@gmail.com</span></div>
         <div class="info-row"><i class="fas fa-phone"></i><span>+213 542 031 929</span></div>
         <div class="info-row"><i class="fab fa-linkedin"></i><span>ikram Belhadjer</span></div>
-        <div class="info-row"><i class="fas fa-circle-check"></i><span>Disponible — Mobilité nationale</span></div>
+        <div class="info-row"><i class="fas fa-circle-check"></i><span>Disponible immédiatement</span></div>
       </div>
       <div class="about-card reveal" style="margin-bottom:20px">
         <h3><i class="fas fa-globe"></i> Langues</h3>
@@ -409,7 +396,8 @@
           <span>Curiosité</span><span>Autonomie</span><span>Adaptabilité</span>
           <span>Rigueur</span><span>Travail d'équipe</span><span>Créativité</span>
           <span>Apprentissage rapide</span><span>Sens de l'analyse</span>
-          <span>Voyageuse</span><span>Ouverture culturelle</span>
+          <span>Ouverture culturelle</span><span>Résilience</span>
+          <span>Mobilité internationale</span>
         </div>
       </div>
     </div>
@@ -425,22 +413,31 @@
     <div class="divider"></div>
   </div>
   <div class="skills-grid">
+    <!-- Réseau -->
     <div class="skill-group reveal">
       <h3><i class="fas fa-network-wired"></i> Réseau & Infrastructure</h3>
       <div class="skill-item"><div class="skill-item-top"><span>Cisco Packet Tracer</span><span>90%</span></div><div class="skill-bar"><div class="skill-fill" data-width="90"></div></div></div>
       <div class="skill-item"><div class="skill-item-top"><span>DNS, DHCP & Protocoles TCP/IP</span><span>85%</span></div><div class="skill-bar"><div class="skill-fill" data-width="85"></div></div></div>
       <div class="skill-item"><div class="skill-item-top"><span>Windows Server & Active Directory</span><span>80%</span></div><div class="skill-bar"><div class="skill-fill" data-width="80"></div></div></div>
+      <div class="skill-item"><div class="skill-item-top"><span>VLAN / 802.1Q / STP / EtherChannel</span><span>75%</span></div><div class="skill-bar"><div class="skill-fill" data-width="75"></div></div></div>
       <div class="skill-item"><div class="skill-item-top"><span>Virtualisation (VirtualBox, VMware)</span><span>75%</span></div><div class="skill-bar"><div class="skill-fill" data-width="75"></div></div></div>
-      <div class="skill-item"><div class="skill-item-top"><span>Administration Linux</span><span>60%</span></div><div class="skill-bar"><div class="skill-fill" data-width="60"></div></div></div>
+      <div class="skill-item"><div class="skill-item-top"><span>Cluster HA Linux (Pacemaker / Corosync)</span><span>65%</span></div><div class="skill-bar"><div class="skill-fill" data-width="65"></div></div></div>
+      <div class="skill-item"><div class="skill-item-top"><span>Administration Linux (Ubuntu Server)</span><span>60%</span></div><div class="skill-bar"><div class="skill-fill" data-width="60"></div></div></div>
     </div>
+    <!-- Cybersécurité -->
     <div class="skill-group reveal">
       <h3><i class="fas fa-shield-alt"></i> Cybersécurité</h3>
       <div class="skill-item"><div class="skill-item-top"><span>Ethical Hacking</span><span>75%</span></div><div class="skill-bar"><div class="skill-fill" data-width="75"></div></div></div>
       <div class="skill-item"><div class="skill-item-top"><span>Kali Linux & Nmap</span><span>70%</span></div><div class="skill-bar"><div class="skill-fill" data-width="70"></div></div></div>
       <div class="skill-item"><div class="skill-item-top"><span>Wireshark & Analyse réseau</span><span>70%</span></div><div class="skill-bar"><div class="skill-fill" data-width="70"></div></div></div>
-      <div class="skill-item"><div class="skill-item-top"><span>Firewall & Sécurité (ACL, pfSense)</span><span>65%</span></div><div class="skill-bar"><div class="skill-fill" data-width="65"></div></div></div>
-      <div class="skill-item"><div class="skill-item-top"><span>Vulnérabilités (CVE, CVSS)</span><span>65%</span></div><div class="skill-bar"><div class="skill-fill" data-width="65"></div></div></div>
+      <div class="skill-item"><div class="skill-item-top"><span>Firewall & Sécurité (ACL, pfSense, IDS/IPS)</span><span>65%</span></div><div class="skill-bar"><div class="skill-fill" data-width="65"></div></div></div>
+      <div class="skill-item"><div class="skill-item-top"><span>Authentification AAA — FreeRADIUS & OpenLDAP</span><span>65%</span></div><div class="skill-bar"><div class="skill-fill" data-width="65"></div></div></div>
+      <div class="skill-item"><div class="skill-item-top"><span>Supervision SOC — Nagios Core</span><span>70%</span></div><div class="skill-bar"><div class="skill-fill" data-width="70"></div></div></div>
+      <div class="skill-item"><div class="skill-item-top"><span>Security Onion & analyse de logs</span><span>55%</span></div><div class="skill-bar"><div class="skill-fill" data-width="55"></div></div></div>
+      <div class="skill-item"><div class="skill-item-top"><span>Vulnérabilités (CVE, CVSS, CWE)</span><span>65%</span></div><div class="skill-bar"><div class="skill-fill" data-width="65"></div></div></div>
+      <div class="skill-item"><div class="skill-item-top"><span>Gestion des risques — Méthode EBIOS</span><span>60%</span></div><div class="skill-bar"><div class="skill-fill" data-width="60"></div></div></div>
     </div>
+    <!-- Développement -->
     <div class="skill-group reveal">
       <h3><i class="fas fa-code"></i> Développement & Outils</h3>
       <div class="skill-item"><div class="skill-item-top"><span>Intelligence Artificielle (outils IA)</span><span>85%</span></div><div class="skill-bar"><div class="skill-fill" data-width="85"></div></div></div>
@@ -461,53 +458,75 @@
     <div class="divider"></div>
   </div>
   <div class="projects-grid">
+
     <div class="project-card reveal">
       <div class="project-icon"><i class="fas fa-network-wired"></i></div>
       <h3>Infrastructure Réseau d'Entreprise</h3>
-      <p>Conception et configuration d'une infrastructure réseau complète avec routeurs, switches, VLAN et services DNS/DHCP sous Cisco Packet Tracer.</p>
-      <div class="project-tags"><span>Cisco</span><span>VLAN</span><span>DNS/DHCP</span><span>Packet Tracer</span></div>
+      <p>Conception et configuration d'une infrastructure réseau complète sous Cisco Packet Tracer : routeurs, switches, VLAN 802.1Q, STP, EtherChannel, services DNS/DHCP et ACL de sécurité. Simulation d'un environnement PME avec segmentation réseau et politiques d'accès.</p>
+      <div class="project-tags"><span>Cisco</span><span>VLAN</span><span>STP</span><span>DNS/DHCP</span><span>ACL</span><span>Packet Tracer</span></div>
     </div>
+
     <div class="project-card reveal">
       <div class="project-icon"><i class="fas fa-shield-alt"></i></div>
-      <h3>Audit de Sécurité (Ethical Hacking)</h3>
-      <p>Réalisation d'un audit de sécurité sur un environnement virtualisé : scan de ports, analyse de vulnérabilités et rapport de recommandations.</p>
-      <div class="project-tags"><span>Kali Linux</span><span>Nmap</span><span>Wireshark</span><span>Ethical Hacking</span></div>
+      <h3>Audit de Sécurité — Ethical Hacking</h3>
+      <p>Réalisation d'un audit de sécurité complet sur un environnement virtualisé : scan de ports avec Nmap, analyse du trafic réseau avec Wireshark, identification de vulnérabilités (CVE/CVSS), et production d'un rapport de recommandations selon la méthodologie EBIOS.</p>
+      <div class="project-tags"><span>Kali Linux</span><span>Nmap</span><span>Wireshark</span><span>CVE/CVSS</span><span>EBIOS</span></div>
     </div>
+
     <div class="project-card reveal">
       <div class="project-icon"><i class="fas fa-server"></i></div>
       <h3>Administration Windows Server</h3>
-      <p>Déploiement d'un Windows Server avec Active Directory, gestion des GPO, création d'utilisateurs et politiques de sécurité.</p>
+      <p>Déploiement complet d'un Windows Server 2019 : installation d'Active Directory, gestion des GPO, création d'unités organisationnelles, politiques de mot de passe, configuration RAID et gestion des utilisateurs et groupes en environnement virtualisé.</p>
       <div class="project-tags"><span>Windows Server</span><span>Active Directory</span><span>GPO</span><span>RAID</span></div>
     </div>
+
     <div class="project-card reveal">
-      <div class="project-icon"><i class="fas fa-globe"></i></div>
-      <h3>Développement de Sites Web</h3>
-      <p>Création de sites web avec HTML, CSS et intelligence artificielle. Portfolio personnel, pages de présentation et landing pages.</p>
-      <div class="project-tags"><span>HTML</span><span>CSS</span><span>GitHub Pages</span><span>IA</span></div>
+      <div class="project-icon"><i class="fas fa-key"></i></div>
+      <h3>AAA — FreeRADIUS & OpenLDAP</h3>
+      <p>Déploiement d'un système d'authentification AAA complet sur Ubuntu Server : FreeRADIUS pour l'authentification centralisée, OpenLDAP pour l'annuaire utilisateurs, gestion des groupes et autorisation par rôle. Intégration EAP-TTLS et VLAN dynamique par groupe.</p>
+      <div class="project-tags"><span>FreeRADIUS</span><span>OpenLDAP</span><span>AAA</span><span>EAP-TTLS</span><span>VLAN</span><span>Ubuntu</span></div>
     </div>
+
     <div class="project-card reveal">
-      <div class="project-icon"><i class="fas fa-bullhorn"></i></div>
-      <h3>Marketing Digital & TikTok Ads</h3>
-      <p>Gestion de campagnes publicitaires TikTok Ads, création de contenu digital, stratégie de marketing pour petites entreprises.</p>
-      <div class="project-tags"><span>TikTok Ads</span><span>Marketing</span><span>Contenu digital</span></div>
+      <div class="project-icon"><i class="fas fa-layer-group"></i></div>
+      <h3>Cluster HA Linux — Pacemaker / Corosync</h3>
+      <p>Mise en place d'un cluster haute disponibilité sous Linux avec Pacemaker et Corosync : configuration des nœuds, gestion des ressources, basculement automatique (failover) et test de résilience en cas de panne d'un nœud.</p>
+      <div class="project-tags"><span>Pacemaker</span><span>Corosync</span><span>Cluster HA</span><span>Linux</span><span>Failover</span></div>
     </div>
-    <div class="project-card reveal">
-      <div class="project-icon"><i class="fas fa-robot"></i></div>
-      <h3>Automatisation Python</h3>
-      <p>Scripts Python pour l'automatisation de tâches informatiques, traitement de données et intégration d'outils d'intelligence artificielle.</p>
-      <div class="project-tags"><span>Python</span><span>Automatisation</span><span>IA</span></div>
-    </div>
+
     <div class="project-card reveal">
       <div class="project-icon"><i class="fas fa-eye"></i></div>
-      <h3>Nagios Core Mastery — SOC Monitoring</h3>
+      <h3>Nagios Core — SOC Monitoring</h3>
       <p>Guide complet de supervision réseau avec Nagios Core. Configuration, monitoring temps réel, alertes, plugins et dépannage. Environnement production Ubuntu 22.04 LTS.</p>
-      <div class="project-tags"><span>Nagios Core</span><span>Supervision</span><span>Monitoring</span><span>Ubuntu</span></div>
+      <div class="project-tags"><span>Nagios Core</span><span>Supervision</span><span>SOC</span><span>Monitoring</span><span>Ubuntu</span></div>
       <div style="margin-top: 12px;">
-        <a href="nagios.html" target="_blank" class="btn" style="display: inline-flex; padding: 8px 14px; font-size: 0.8rem; background: rgba(0,212,255,0.15); border: 1px solid var(--pink); color: var(--pink); border-radius: 8px; text-decoration: none; transition: all 0.3s;">
-          <i class="fas fa-external-link-alt"></i> Consulter
+        <a href="nagios.html" target="_blank" class="btn" style="display:inline-flex;padding:8px 14px;font-size:0.8rem;background:rgba(0,212,255,0.15);border:1px solid var(--pink);color:var(--pink);border-radius:8px;text-decoration:none;transition:all 0.3s;">
+          <i class="fas fa-external-link-alt"></i>&nbsp; Consulter
         </a>
       </div>
     </div>
+
+    <div class="project-card reveal">
+      <div class="project-icon"><i class="fas fa-globe"></i></div>
+      <h3>Développement de Sites Web</h3>
+      <p>Création de sites web avec HTML, CSS et intelligence artificielle. Portfolio personnel, pages de présentation et landing pages optimisées.</p>
+      <div class="project-tags"><span>HTML</span><span>CSS</span><span>GitHub Pages</span><span>IA</span></div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-icon"><i class="fas fa-bullhorn"></i></div>
+      <h3>Marketing Digital & TikTok Ads</h3>
+      <p>Gestion de campagnes publicitaires TikTok Ads, création de contenu digital, stratégie de marketing pour petites entreprises. Expérience acquise lors du séjour en Turquie (2020–2023).</p>
+      <div class="project-tags"><span>TikTok Ads</span><span>Marketing</span><span>Contenu digital</span><span>Stratégie</span></div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-icon"><i class="fas fa-robot"></i></div>
+      <h3>Automatisation Python</h3>
+      <p>Scripts Python pour l'automatisation de tâches informatiques, traitement de données et intégration d'outils d'intelligence artificielle pour booster la productivité.</p>
+      <div class="project-tags"><span>Python</span><span>Automatisation</span><span>IA</span></div>
+    </div>
+
   </div>
 </section>
 
@@ -525,7 +544,7 @@
         <div class="edu-date">2024 — Présent</div>
         <h3>Administration & Sécurité des Réseaux</h3>
         <div class="edu-school">Formation spécialisée — Algérie</div>
-        <p>Formation en cybersécurité et administration réseau. Certification CCNA obtenue. Ethical Hacking. Pratique intensive avec Cisco Packet Tracer, virtualisation et sécurité des systèmes.</p>
+        <p>Formation approfondie en cybersécurité et administration réseau. Certifications CCNA et Ethical Hacking obtenues. Pratique intensive avec Cisco Packet Tracer, virtualisation, FreeRADIUS, Pacemaker/Corosync, Nagios Core, EBIOS et sécurité des systèmes.</p>
       </div>
       <div class="edu-dot"></div>
       <div class="edu-spacer"></div>
@@ -537,7 +556,7 @@
         <div class="edu-date">2020 — 2023</div>
         <h3>Expérience Internationale — Turquie</h3>
         <div class="edu-school">Istanbul, Turquie</div>
-        <p>Formation en prothèse dentaire. Expérience professionnelle dans plusieurs secteurs : immobilier, call center, hôpital et tâches informatiques. Maîtrise de la langue turque acquise.</p>
+        <p>Expérience professionnelle internationale dans plusieurs secteurs : médical, immobilier, call center et tâches informatiques. Maîtrise complète de la langue turque acquise. Développement d'une forte adaptabilité et ouverture interculturelle.</p>
       </div>
     </div>
     <div class="edu-item">
@@ -554,7 +573,7 @@
       <div class="edu-spacer"></div>
       <div class="edu-dot"></div>
       <div class="edu-card reveal">
-        <div class="edu-date">Baccalauréat</div>
+        <div class="edu-date">2019 — Baccalauréat</div>
         <h3>Baccalauréat Technique — Génie des Procédés</h3>
         <div class="edu-school">Algérie</div>
         <p>Baccalauréat Technique Mathématiques option Génie des Procédés. Base solide en mathématiques, sciences et ingénierie.</p>
@@ -571,16 +590,31 @@
       <i class="fas fa-network-wired"></i>
       <h4>CCNA</h4>
       <p>Cisco Certified Network Associate</p>
+      <div class="cert-date">Cisco Networking Academy · 2026</div>
     </div>
     <div class="cert-card reveal">
       <i class="fas fa-user-secret"></i>
       <h4>Ethical Hacker</h4>
       <p>Certification en hacking éthique</p>
+      <div class="cert-date">Cisco Networking Academy · 2026</div>
     </div>
     <div class="cert-card reveal">
       <i class="fas fa-shield-halved"></i>
       <h4>Cybersécurité</h4>
-      <p>Formations continues en cybersécurité</p>
+      <p>Notions fondamentales en cybersécurité</p>
+      <div class="cert-date">Cisco Networking Academy · 2026</div>
+    </div>
+    <div class="cert-card reveal">
+      <i class="fas fa-eye"></i>
+      <h4>Nagios Core</h4>
+      <p>SOC Monitoring & Supervision réseau</p>
+      <div class="cert-date">Projet documenté · 2026</div>
+    </div>
+    <div class="cert-card reveal">
+      <i class="fas fa-diagram-project"></i>
+      <h4>Packet Tracer</h4>
+      <p>Premiers pas avec Cisco Packet Tracer</p>
+      <div class="cert-date">Cisco Networking Academy · 2025</div>
     </div>
   </div>
 </section>
@@ -733,7 +767,7 @@ themeBtn.onclick = () => {
 };
 
 // TYPING
-const phrases = ['Administratrice Réseau & Cybersécurité', 'Ethical Hacker', 'Développeuse Web passionnée', 'Certifiée CCNA'];
+const phrases = ['Administratrice Réseau & Cybersécurité', 'Ethical Hacker Certifiée', 'Certifiée CCNA', 'Développeuse Web passionnée', 'Expérience internationale — 5 langues'];
 let pi = 0, ci = 0, del = false;
 const typEl = document.getElementById('typingText');
 function type() {
