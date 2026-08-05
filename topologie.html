@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOPOLOGIE — Administration Réseaux & Sécurité · Ikram Belhadjer</title>
+<meta name="description" content="Cahier technique d'administration réseau : VLAN, STP, EtherChannel, DHCP, DHCPv6, DNS et sécurité L2/L3, avec labs, quiz et glossaire interactifs.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B1526; --bg-alt:#0F1E36; --panel:#0F1F3B;
+    --grid:rgba(94,234,212,0.055);
+    --cyan:#4FD8EB; --blue:#5B8CFF; --amber:#F5A623; --rose:#FF6B6B; --green:#4ADE80;
+    --text:#E7EEF7; --dim:#93A5C4; --dim2:#5E7295;
+    --card:rgba(255,255,255,0.035); --card-hi:rgba(255,255,255,0.07);
+    --border:rgba(94,216,235,0.16); --border-hi:rgba(94,216,235,0.4);
+    --radius:10px;
+    --font-display:'Space Grotesk',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'IBM Plex Mono',monospace;
+  }
+  html.light{
+    --bg:#F3F6FA; --bg-alt:#EAF0F7; --panel:#FFFFFF;
+    --grid:rgba(20,60,120,0.06);
+    --cyan:#0E8C97; --blue:#2B5FD9; --amber:#B3720B; --rose:#C43D3D; --green:#1F9D55;
+    --text:#152238; --dim:#4A5A78; --dim2:#7688A6;
+    --card:rgba(20,50,100,0.035); --card-hi:rgba(20,50,100,0.07);
+    --border:rgba(20,60,120,0.14); --border-hi:rgba(14,140,151,0.45);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:
+      linear-gradient(var(--grid) 1px, transparent 1px) 0 0/40px 40px,
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0/40px 40px,
+      var(--bg);
+    color:var(--text); font-family:var(--font-body); line-height:1.6;
+    transition:background-color .3s, color .3s;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--cyan); color:#04121a; }
+  a{ color:inherit; }
+  h1,h2,h3,h4{ font-family:var(--font-display); letter-spacing:-0.01em; }
+  .mono{ font-family:var(--font-mono); }
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 28px; }
+
+  /* ---------- top bar ---------- */
+  header.top{
+    position:sticky; top:0; z-index:50;
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .top-inner{ display:flex; align-items:center; justify-content:space-between; padding:14px 28px; max-width:1180px; margin:0 auto; }
+  .brand{ display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:700; font-size:19px;}
+  .brand .node{ width:11px; height:11px; border-radius:2px; background:var(--cyan); box-shadow:0 0 10px var(--cyan); transform:rotate(45deg);}
+  .brand small{ display:block; font-family:var(--font-mono); font-weight:400; font-size:10px; letter-spacing:.12em; color:var(--dim2); text-transform:uppercase; margin-top:1px;}
+  .top-actions{ display:flex; align-items:center; gap:10px; }
+  .btn{
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.03em;
+    padding:8px 14px; border-radius:7px; border:1px solid var(--border);
+    background:var(--card); color:var(--text); cursor:pointer; transition:.15s;
+  }
+  .btn:hover{ border-color:var(--border-hi); background:var(--card-hi); }
+  .btn.primary{ background:var(--cyan); color:#04121a; border-color:var(--cyan); font-weight:600; }
+  .btn.primary:hover{ filter:brightness(1.08); }
+  #search{
+    font-family:var(--font-mono); font-size:12px; background:var(--card); border:1px solid var(--border);
+    border-radius:7px; padding:8px 12px; color:var(--text); width:180px; outline:none;
+  }
+  #search:focus{ border-color:var(--border-hi); }
+  #search::placeholder{ color:var(--dim2); }
+
+  /* ---------- layout ---------- */
+  .shell{ display:grid; grid-template-columns:230px 1fr; gap:0; max-width:1180px; margin:0 auto; padding:0 28px; }
+  nav.side{ padding:28px 20px 60px 0; position:sticky; top:64px; align-self:start; height:calc(100vh - 64px); overflow-y:auto; }
+  nav.side::-webkit-scrollbar{ width:4px; } nav.side::-webkit-scrollbar-thumb{ background:var(--border-hi); border-radius:4px;}
+  .side-label{ font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:.14em; color:var(--dim2); margin:20px 0 8px; }
+  .side-label:first-child{ margin-top:0; }
+  .node-link{
+    display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:7px; font-size:13.5px;
+    color:var(--dim); text-decoration:none; cursor:pointer; border-left:2px solid transparent; transition:.15s;
+  }
+  .node-link .id{ font-family:var(--font-mono); font-size:10px; color:var(--dim2); width:22px; }
+  .node-link:hover{ color:var(--text); background:var(--card); }
+  .node-link.active{ color:var(--cyan); border-left-color:var(--cyan); background:var(--card); }
+  .node-link.active .id{ color:var(--cyan); }
+  .progress-box{ margin-top:22px; padding:12px; border:1px solid var(--border); border-radius:9px; background:var(--card); }
+  .progress-box .pt{ font-family:var(--font-mono); font-size:10px; color:var(--dim2); text-transform:uppercase; letter-spacing:.1em; display:flex; justify-content:space-between; margin-bottom:8px;}
+  .bar{ height:5px; background:var(--border); border-radius:3px; overflow:hidden; }
+  .bar>i{ display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--cyan),var(--blue)); transition:width .4s; }
+
+  main{ padding:0 0 100px 40px; border-left:1px solid var(--border); min-width:0; }
+
+  /* ---------- hero ---------- */
+  .hero{ padding:56px 0 40px; }
+  .eyebrow{ font-family:var(--font-mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--cyan); display:flex; align-items:center; gap:8px; margin-bottom:16px;}
+  .eyebrow::before{ content:''; width:16px; height:1px; background:var(--cyan); }
+  .hero h1{ font-size:44px; line-height:1.08; font-weight:700; max-width:760px; }
+  .hero h1 span{ color:var(--cyan); }
+  .hero p.lead{ margin-top:16px; max-width:600px; color:var(--dim); font-size:15.5px; }
+  .hero-meta{ margin-top:22px; display:flex; gap:22px; font-family:var(--font-mono); font-size:12px; color:var(--dim2); flex-wrap:wrap;}
+  .hero-meta b{ color:var(--text); font-weight:600;}
+
+  /* topology signature diagram */
+  .topo{ margin-top:36px; border:1px solid var(--border); border-radius:14px; background:var(--panel); padding:10px; }
+  .topo svg{ width:100%; height:auto; display:block; }
+  .topo-cap{ font-family:var(--font-mono); font-size:10.5px; color:var(--dim2); padding:10px 6px 2px; display:flex; justify-content:space-between;}
+  .tnode{ cursor:pointer; }
+  .tnode circle.halo{ opacity:0; transition:opacity .2s; }
+  .tnode:hover circle.halo{ opacity:.35; }
+  .tnode text{ font-family:var(--font-mono); }
+  .packet{ animation:travel linear infinite; }
+  @keyframes travel{ 0%{ offset-distance:0%; } 100%{ offset-distance:100%; } }
+
+  /* ---------- sections ---------- */
+  section.mod{ padding:64px 0 8px; border-top:1px solid var(--border); scroll-margin-top:80px; }
+  section.mod:first-of-type{ border-top:none; }
+  .mod-head{ display:flex; align-items:baseline; gap:14px; margin-bottom:8px; }
+  .mod-num{ font-family:var(--font-mono); font-size:13px; color:var(--cyan); border:1px solid var(--border-hi); border-radius:5px; padding:2px 8px;}
+  .mod h2{ font-size:26px; }
+  .mod .tagline{ color:var(--dim); font-size:14px; margin:6px 0 26px; max-width:640px;}
+
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .grid3{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  @media(max-width:820px){ .grid2,.grid3{ grid-template-columns:1fr; } }
+
+  .card{ border:1px solid var(--border); background:var(--card); border-radius:var(--radius); padding:18px; }
+  .card h4{ font-size:14.5px; display:flex; align-items:center; gap:8px; margin-bottom:8px;}
+  .card p{ font-size:13.5px; color:var(--dim); }
+  .chip-row{ display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
+  .chip{ font-family:var(--font-mono); font-size:10.5px; padding:3px 8px; border-radius:20px; border:1px solid var(--border); color:var(--dim); }
+
+  table{ width:100%; border-collapse:collapse; margin:18px 0; font-size:13.5px; }
+  th,td{ text-align:left; padding:10px 12px; border-bottom:1px solid var(--border); }
+  th{ font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--dim2); font-weight:500;}
+  tr:hover td{ background:var(--card); }
+
+  pre.term{
+    background:var(--bg-alt); border:1px solid var(--border); border-radius:9px; padding:16px 18px;
+    font-family:var(--font-mono); font-size:12.5px; overflow-x:auto; color:#BFE9EE; line-height:1.7; margin:16px 0;
+    position:relative;
+  }
+  html.light pre.term{ color:#0C4A52; }
+  pre.term .c{ color:var(--dim2); } /* comments */
+  pre.term .k{ color:var(--amber); } /* keyword/prompt */
+  .term-label{ font-family:var(--font-mono); font-size:10.5px; color:var(--dim2); text-transform:uppercase; letter-spacing:.08em; margin-bottom:4px; }
+
+  .callout{ border-radius:9px; padding:14px 16px; margin:16px 0; font-size:13.5px; border:1px solid; display:flex; gap:10px;}
+  .callout.info{ background:rgba(91,140,255,.08); border-color:rgba(91,140,255,.3); }
+  .callout.tip{ background:rgba(74,222,128,.07); border-color:rgba(74,222,128,.28); }
+  .callout b{ font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; display:block; margin-bottom:4px;}
+
+  .threat{ border-radius:var(--radius); border:1px solid var(--border); margin:14px 0; overflow:hidden; }
+  .threat .th-top{ padding:12px 16px; display:flex; align-items:center; gap:10px; font-family:var(--font-mono); font-size:11.5px; font-weight:600; text-transform:uppercase; letter-spacing:.05em;}
+  .threat .th-body{ padding:14px 16px; font-size:13.5px; color:var(--dim); border-top:1px solid var(--border);}
+  .threat .th-body .fix{ margin-top:10px; padding-top:10px; border-top:1px dashed var(--border); color:var(--text); }
+  .threat .th-body .fix b{ color:var(--green); font-family:var(--font-mono); font-size:11px; text-transform:uppercase; margin-right:6px;}
+  .sev-critique .th-top{ background:rgba(255,107,107,.12); color:var(--rose);}
+  .sev-eleve .th-top{ background:rgba(245,166,35,.12); color:var(--amber);}
+  .sev-moyen .th-top{ background:rgba(91,140,255,.12); color:var(--blue);}
+
+  .steps{ counter-reset:s; margin:18px 0; }
+  .step{ display:flex; gap:14px; padding:12px 0; border-top:1px solid var(--border); }
+  .step:first-child{ border-top:none; }
+  .step .n{ font-family:var(--font-mono); font-size:12px; color:var(--cyan); border:1px solid var(--border-hi); border-radius:50%; width:26px; height:26px; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .step h5{ font-size:13.5px; margin-bottom:2px;}
+  .step p{ font-size:13px; color:var(--dim); }
+
+  /* compare bars (STP vs RSTP) */
+  .compare{ margin:20px 0; }
+  .cbar-row{ display:grid; grid-template-columns:110px 1fr 60px; align-items:center; gap:12px; margin:10px 0; font-family:var(--font-mono); font-size:12px;}
+  .cbar-track{ height:10px; background:var(--card); border-radius:5px; overflow:hidden; border:1px solid var(--border);}
+  .cbar-fill{ height:100%; border-radius:5px; width:0; transition:width 1.1s cubic-bezier(.2,.8,.2,1); }
+
+  /* quiz */
+  .quiz-card{ border:1px solid var(--border); border-radius:var(--radius); padding:20px; background:var(--card); margin-bottom:16px;}
+  .quiz-q{ font-size:14.5px; font-weight:600; margin-bottom:12px; }
+  .quiz-opts{ display:flex; flex-direction:column; gap:8px; }
+  .quiz-opt{ text-align:left; padding:10px 14px; border-radius:7px; border:1px solid var(--border); background:transparent; color:var(--text); font-size:13.5px; cursor:pointer; font-family:var(--font-body);}
+  .quiz-opt:hover{ border-color:var(--border-hi); }
+  .quiz-opt.correct{ border-color:var(--green); background:rgba(74,222,128,.1); }
+  .quiz-opt.wrong{ border-color:var(--rose); background:rgba(255,107,107,.1); }
+  .quiz-exp{ margin-top:10px; font-size:12.5px; color:var(--dim); display:none; }
+  #quiz-score{ font-family:var(--font-mono); font-size:13px; color:var(--cyan); }
+
+  /* glossary */
+  .gloss-item{ padding:14px 0; border-top:1px solid var(--border); }
+  .gloss-item:first-child{ border-top:none; }
+  .gloss-term{ font-family:var(--font-mono); font-weight:600; color:var(--cyan); font-size:13.5px; }
+  .gloss-def{ font-size:13.5px; color:var(--dim); margin-top:3px; }
+
+  /* cli lab */
+  .cli-box{ background:var(--bg-alt); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+  .cli-head{ display:flex; justify-content:space-between; align-items:center; padding:10px 14px; border-bottom:1px solid var(--border); font-family:var(--font-mono); font-size:11px; color:var(--dim2); }
+  .cli-log{ padding:16px; font-family:var(--font-mono); font-size:12.5px; height:220px; overflow-y:auto; color:#BFE9EE; }
+  html.light .cli-log{ color:#0C4A52; }
+  .cli-log .line{ margin-bottom:4px; white-space:pre-wrap; }
+  .cli-log .ok{ color:var(--green); } .cli-log .err{ color:var(--rose); } .cli-log .hint{ color:var(--amber); }
+  .cli-input-row{ display:flex; align-items:center; gap:8px; border-top:1px solid var(--border); padding:10px 14px; }
+  .cli-input-row span{ font-family:var(--font-mono); font-size:12.5px; color:var(--cyan); }
+  .cli-input-row input{ flex:1; background:transparent; border:none; outline:none; color:var(--text); font-family:var(--font-mono); font-size:12.5px; }
+  .cli-actions{ display:flex; gap:8px; padding:10px 14px; border-top:1px solid var(--border); }
+
+  footer{ margin-top:60px; padding:34px 0 60px; border-top:1px solid var(--border); font-family:var(--font-mono); font-size:11.5px; color:var(--dim2); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+
+  @media(max-width:900px){
+    .shell{ grid-template-columns:1fr; }
+    nav.side{ display:none; }
+    main{ padding-left:0; border-left:none; }
+    .hero h1{ font-size:32px; }
+  }
+
+  @media print{
+    header.top, nav.side, .cli-box, #searchBtn, .top-actions{ display:none !important; }
+    body{ background:#fff; color:#000; }
+    main{ border:none; padding:0; }
+  }
+
+  .hidden-by-search{ display:none !important; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <span class="node"></span>
+      <div>TOPOLOGIE<small>réseaux &amp; sécurité — cahier technique</small></div>
+    </div>
+    <div class="top-actions">
+      <div style="position:relative;">
+        <input id="search" type="text" placeholder="rechercher un terme… (Entrée = aller au résultat)">
+        <span id="searchCount" class="mono" style="position:absolute; right:-6px; top:-20px; font-size:10px; color:var(--dim2); white-space:nowrap; display:none;"></span>
+      </div>
+      <button class="btn" id="themeBtn" title="changer le thème">◐ thème</button>
+      <button class="btn primary" onclick="window.print()">↓ imprimer</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap" style="padding-top:0;">
+<div class="shell">
+
+  <nav class="side">
+    <div class="side-label">Parcours</div>
+    <a class="node-link" data-t="home"><span class="id">00</span>Accueil</a>
+    <a class="node-link" data-t="vlan"><span class="id">01</span>VLAN</a>
+    <a class="node-link" data-t="stp"><span class="id">02</span>STP / RSTP</a>
+    <a class="node-link" data-t="ether"><span class="id">03</span>EtherChannel</a>
+    <a class="node-link" data-t="dhcp"><span class="id">04</span>DHCP</a>
+    <a class="node-link" data-t="dhcpv6"><span class="id">05</span>DHCPv6</a>
+    <a class="node-link" data-t="dns"><span class="id">06</span>DNS</a>
+    <a class="node-link" data-t="secu"><span class="id">07</span>Sécurité L2/L3</a>
+    <div class="side-label">Pratique</div>
+    <a class="node-link" data-t="cli"><span class="id">08</span>Lab CLI</a>
+    <a class="node-link" data-t="quiz"><span class="id">09</span>Auto-évaluation</a>
+    <a class="node-link" data-t="glossaire"><span class="id">10</span>Glossaire</a>
+
+    <div class="progress-box">
+      <div class="pt"><span>progression</span><span id="progText">0/8</span></div>
+      <div class="bar"><i id="progFill"></i></div>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- ============ HOME ============ -->
+    <section class="mod" id="home">
+      <div class="hero">
+        <div class="eyebrow">cahier technique — administration réseau</div>
+        <h1>Comprendre le réseau <span>nœud par nœud</span>, avant de le configurer.</h1>
+        <p class="lead">Un parcours condensé sur la commutation, le routage inter-VLAN et la sécurité de couche 2/3 — pensé pour progresser dans l'ordre où un administrateur diagnostique réellement un réseau : du câble jusqu'à l'application.</p>
+        <div class="hero-meta">
+          <span>rédigé par <b>Ikram Belhadjer</b></span>
+          <span>8 modules · <b>1 lab CLI</b> · <b>quiz noté</b></span>
+          <span>niveau <b>intermédiaire → avancé</b></span>
+        </div>
+
+        <div class="topo">
+          <svg viewBox="0 0 1000 260" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <path id="p1" d="M120,130 L330,70"/>
+              <path id="p2" d="M120,130 L330,190"/>
+              <path id="p3" d="M330,70 L560,130"/>
+              <path id="p4" d="M330,190 L560,130"/>
+              <path id="p5" d="M560,130 L780,70"/>
+              <path id="p6" d="M560,130 L780,190"/>
+            </defs>
+            <g stroke="var(--border-hi)" stroke-width="1.4" fill="none" opacity="0.7">
+              <use href="#p1"/><use href="#p2"/><use href="#p3"/><use href="#p4"/><use href="#p5"/><use href="#p6"/>
+            </g>
+            <circle class="packet" r="3.5" fill="var(--cyan)" style="offset-path:path('M120,130 L330,70 L560,130 L780,70');animation-duration:4s;"/>
+            <circle class="packet" r="3.5" fill="var(--blue)" style="offset-path:path('M120,130 L330,190 L560,130 L780,190');animation-duration:5.5s; animation-delay:1s;"/>
+
+            <g class="tnode" data-t="vlan" transform="translate(120,130)">
+              <circle class="halo" r="26" fill="var(--cyan)"/>
+              <circle r="16" fill="var(--panel)" stroke="var(--cyan)" stroke-width="1.6"/>
+              <text x="0" y="4" text-anchor="middle" font-size="10" fill="var(--cyan)">PC</text>
+              <text x="0" y="38" text-anchor="middle" font-size="10.5" fill="var(--dim)">VLAN 10</text>
+            </g>
+            <g class="tnode" data-t="stp" transform="translate(330,70)">
+              <circle class="halo" r="26" fill="var(--cyan)"/>
+              <circle r="16" fill="var(--panel)" stroke="var(--cyan)" stroke-width="1.6"/>
+              <text x="0" y="4" text-anchor="middle" font-size="9" fill="var(--cyan)">SW1</text>
+              <text x="0" y="-24" text-anchor="middle" font-size="10.5" fill="var(--dim)">STP</text>
+            </g>
+            <g class="tnode" data-t="ether" transform="translate(330,190)">
+              <circle class="halo" r="26" fill="var(--cyan)"/>
+              <circle r="16" fill="var(--panel)" stroke="var(--cyan)" stroke-width="1.6"/>
+              <text x="0" y="4" text-anchor="middle" font-size="9" fill="var(--cyan)">SW2</text>
+              <text x="0" y="38" text-anchor="middle" font-size="10.5" fill="var(--dim)">Po1 LACP</text>
+            </g>
+            <g class="tnode" data-t="dhcp" transform="translate(560,130)">
+              <circle class="halo" r="26" fill="var(--cyan)"/>
+              <circle r="16" fill="var(--panel)" stroke="var(--cyan)" stroke-width="1.6"/>
+              <text x="0" y="4" text-anchor="middle" font-size="8.5" fill="var(--cyan)">R1</text>
+              <text x="0" y="-24" text-anchor="middle" font-size="10.5" fill="var(--dim)">DHCP/DNS</text>
+            </g>
+            <g class="tnode" data-t="secu" transform="translate(780,70)">
+              <circle class="halo" r="26" fill="var(--rose)"/>
+              <circle r="16" fill="var(--panel)" stroke="var(--rose)" stroke-width="1.6"/>
+              <text x="0" y="4" text-anchor="middle" font-size="8" fill="var(--rose)">ACL</text>
+              <text x="0" y="-24" text-anchor="middle" font-size="10.5" fill="var(--dim)">Sécurité</text>
+            </g>
+            <g class="tnode" data-t="dns" transform="translate(780,190)">
+              <circle class="halo" r="26" fill="var(--cyan)"/>
+              <circle r="16" fill="var(--panel)" stroke="var(--cyan)" stroke-width="1.6"/>
+              <text x="0" y="4" text-anchor="middle" font-size="8" fill="var(--cyan)">WAN</text>
+              <text x="0" y="38" text-anchor="middle" font-size="10.5" fill="var(--dim)">DNS public</text>
+            </g>
+          </svg>
+          <div class="topo-cap"><span>topologie de référence — cliquez un nœud pour ouvrir le module</span><span>schéma interactif</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ VLAN ============ -->
+    <section class="mod" id="vlan">
+      <div class="mod-head"><span class="mod-num">N01</span><h2>VLAN — segmentation logique</h2></div>
+      <p class="tagline">Isoler des groupes d'hôtes sans changer le câblage physique : un VLAN redéfinit les frontières de diffusion à l'intérieur d'un même switch.</p>
+
+      <div class="grid3">
+        <div class="card"><h4>🡒 Domaine de diffusion</h4><p>Chaque VLAN forme son propre domaine de broadcast. Un flood dans VLAN 10 ne traverse jamais VLAN 20 — la panne reste contenue.</p></div>
+        <div class="card"><h4>🡒 Isolation par défaut</h4><p>Deux VLANs ne communiquent pas entre eux sans passage par une couche 3 (routeur ou SVI). C'est un principe de sécurité, pas un accident.</p></div>
+        <div class="card"><h4>🡒 Granularité du contrôle</h4><p>Le VLAN devient l'unité de base pour appliquer ACL, QoS ou politiques de sécurité — on raisonne « par VLAN », pas « par câble ».</p></div>
+      </div>
+
+      <table>
+        <tr><th>Type de port</th><th>VLANs transportés</th><th>Marquage</th><th>Cas d'usage</th></tr>
+        <tr><td><b>Access</b></td><td>1 seul</td><td>non tagué</td><td>poste utilisateur, imprimante</td></tr>
+        <tr><td><b>Trunk</b></td><td>plusieurs</td><td>802.1Q</td><td>liaison switch–switch / switch–routeur</td></tr>
+        <tr><td><b>Voice</b></td><td>data + voix</td><td>voix taguée, data non taguée</td><td>téléphone IP + PC en cascade</td></tr>
+      </table>
+
+      <div class="callout info"><div><b>Frame 802.1Q</b>Le tag inséré ajoute 4 octets entre l'adresse source et l'EtherType : priorité (PCP), indicateur DEI, puis l'identifiant de VLAN sur 12 bits — soit un espace théorique de 4094 VLAN utilisables.</div></div>
+
+      <div class="term-label">Configuration — segmentation + trunk sur SW1</div>
+      <pre class="term"><span class="c">! création des VLANs métier</span>
+<span class="k">SW1(config)#</span> vlan 10
+<span class="k">SW1(config-vlan)#</span> name HR
+<span class="k">SW1(config-vlan)#</span> exit
+<span class="k">SW1(config)#</span> vlan 20
+<span class="k">SW1(config-vlan)#</span> name SALES
+
+<span class="c">! ports utilisateurs</span>
+<span class="k">SW1(config)#</span> interface range fa0/1-2
+<span class="k">SW1(config-if-range)#</span> switchport mode access
+<span class="k">SW1(config-if-range)#</span> switchport access vlan 10
+
+<span class="c">! liaison vers le routeur — trunk 802.1Q</span>
+<span class="k">SW1(config)#</span> interface g0/1
+<span class="k">SW1(config-if)#</span> switchport trunk encapsulation dot1q
+<span class="k">SW1(config-if)#</span> switchport mode trunk
+<span class="k">SW1(config-if)#</span> switchport trunk native vlan 99
+<span class="k">SW1(config-if)#</span> switchport trunk allowed vlan 10,20,99</pre>
+
+      <div class="callout tip"><div><b>Point d'attention</b>Sur un switch multicouche (ex. famille Catalyst), l'encapsulation doit être précisée avant de basculer le port en trunk. Sur un modèle purement L2, 802.1Q est souvent l'unique option et cette ligne est ignorée sans erreur.</div></div>
+
+      <h4 style="margin:26px 0 10px; font-size:15px;">Router-on-a-Stick — routage inter-VLAN</h4>
+      <div class="term-label">Sous-interfaces sur R1</div>
+      <pre class="term"><span class="k">R1(config)#</span> interface g0/0.10
+<span class="k">R1(config-subif)#</span> encapsulation dot1q 10
+<span class="k">R1(config-subif)#</span> ip address 192.168.10.1 255.255.255.0
+<span class="k">R1(config)#</span> interface g0/0.20
+<span class="k">R1(config-subif)#</span> encapsulation dot1q 20
+<span class="k">R1(config-subif)#</span> ip address 192.168.20.1 255.255.255.0
+<span class="c">! le VLAN natif reste tagué côté routeur : mot-clé "native"</span>
+<span class="k">R1(config)#</span> interface g0/0.99
+<span class="k">R1(config-subif)#</span> encapsulation dot1q 99 native
+<span class="k">R1(config-subif)#</span> ip address 192.168.90.1 255.255.255.0</pre>
+
+      <p style="font-size:13.5px; color:var(--dim);">En production, ce rôle est repris par une <b>SVI</b> sur un switch de niveau 3 (<code class="mono">interface vlan 10</code>) : un seul saut en moins, une latence plus faible, pas de goulot d'étranglement sur un lien unique.</p>
+    </section>
+
+    <!-- ============ STP ============ -->
+    <section class="mod" id="stp">
+      <div class="mod-head"><span class="mod-num">N02</span><h2>STP / RSTP — casser les boucles</h2></div>
+      <p class="tagline">La redondance physique protège contre la panne d'un lien — mais sans arbitrage logique, deux chemins actifs entre les mêmes switches créent une tempête de diffusion.</p>
+
+      <div class="steps">
+        <div class="step"><div class="n">1</div><div><h5>Élection du Root Bridge</h5><p>Chaque switch compare son <span class="mono">Bridge ID</span> (priorité + adresse MAC) reçu par BPDU ; le plus bas devient la racine de l'arbre.</p></div></div>
+        <div class="step"><div class="n">2</div><div><h5>Calcul du meilleur chemin</h5><p>Chaque switch non-racine détermine son <b>Root Port</b> : le port avec le coût cumulé le plus faible vers la racine.</p></div></div>
+        <div class="step"><div class="n">3</div><div><h5>Port désigné par segment</h5><p>Sur chaque lien, un seul port devient « designated » et continue à transmettre ; l'autre extrémité passe en blocage.</p></div></div>
+        <div class="step"><div class="n">4</div><div><h5>Blocage logique</h5><p>Le port bloqué reste électriquement actif mais ne transfère aucune trame de données — la boucle est rompue sans débrancher de câble.</p></div></div>
+      </div>
+
+      <div class="compare">
+        <div class="term-label">Convergence — STP classique vs RSTP</div>
+        <div class="cbar-row"><span>802.1D (STP)</span><div class="cbar-track"><div class="cbar-fill" data-w="100%" style="background:var(--rose)"></div></div><span>~50 s</span></div>
+        <div class="cbar-row"><span>802.1w (RSTP)</span><div class="cbar-track"><div class="cbar-fill" data-w="2%" style="background:var(--green)"></div></div><span>&lt;1 s</span></div>
+      </div>
+
+      <table>
+        <tr><th>Vitesse du lien</th><th>Coût STP</th></tr>
+        <tr><td>10 Gbit/s</td><td>2</td></tr>
+        <tr><td>1 Gbit/s</td><td>4</td></tr>
+        <tr><td>100 Mbit/s</td><td>19</td></tr>
+      </table>
+
+      <div class="term-label">Priorité du Root Bridge & protections</div>
+      <pre class="term"><span class="c">! forcer SW1 comme racine du VLAN 10</span>
+<span class="k">SW1(config)#</span> spanning-tree vlan 10 priority 4096
+<span class="c">! racine secondaire de secours</span>
+<span class="k">SW2(config)#</span> spanning-tree vlan 10 root secondary
+<span class="c">! ports vers les postes : forwarding immédiat + garde-fou</span>
+<span class="k">SW1(config-if)#</span> spanning-tree portfast
+<span class="k">SW1(config-if)#</span> spanning-tree bpduguard enable</pre>
+
+      <div class="threat sev-eleve">
+        <div class="th-top">⚠ élevé — usurpation de root bridge</div>
+        <div class="th-body">Un poste connecté sur un port access peut annoncer une priorité artificiellement basse et se faire élire racine, redessinant toute la topologie active à son avantage.
+          <div class="fix"><b>Parade</b>BPDU Guard sur tous les ports access ; Root Guard sur les ports uplink vers des switches non fiables.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ETHERCHANNEL ============ -->
+    <section class="mod" id="ether">
+      <div class="mod-head"><span class="mod-num">N03</span><h2>EtherChannel — agrégation de liens</h2></div>
+      <p class="tagline">Jusqu'à huit ports physiques fusionnés en une seule interface logique : plus de bande passante cumulée, et STP ne voit qu'un seul lien à arbitrer.</p>
+
+      <div class="grid2">
+        <div class="card"><h4>LACP — 802.3ad</h4><p>Standard ouvert, interopérable entre constructeurs. Modes <b>active</b> (négocie) et <b>passive</b> (répond) ; deux ports passifs ne formeront jamais de canal.</p>
+          <div class="chip-row"><span class="chip">active-active ✓</span><span class="chip">active-passive ✓</span><span class="chip">passive-passive ✗</span></div></div>
+        <div class="card"><h4>PAgP — propriétaire Cisco</h4><p>Équivalent fonctionnel réservé à l'écosystème Cisco. Modes <b>desirable</b> et <b>auto</b>, même logique de négociation que LACP.</p>
+          <div class="chip-row"><span class="chip">desirable-desirable ✓</span><span class="chip">desirable-auto ✓</span><span class="chip">auto-auto ✗</span></div></div>
+      </div>
+
+      <div class="term-label">Formation du canal — LACP entre SW1 et SW2</div>
+      <pre class="term"><span class="k">SW1(config)#</span> interface range g0/1-4
+<span class="k">SW1(config-if-range)#</span> switchport trunk encapsulation dot1q
+<span class="k">SW1(config-if-range)#</span> switchport mode trunk
+<span class="k">SW1(config-if-range)#</span> channel-group 1 mode active
+
+<span class="k">SW2(config)#</span> interface range g0/1-4
+<span class="k">SW2(config-if-range)#</span> channel-group 1 mode passive
+
+<span class="c">! vérification — chercher le flag (P) = membre actif du canal</span>
+<span class="k">SW1#</span> show etherchannel summary</pre>
+
+      <div class="callout info"><div><b>Répartition de charge</b>Un flux individuel emprunte toujours le même lien membre (hash MAC ou IP selon <span class="mono">port-channel load-balance</span>) — l'agrégation augmente la capacité globale, jamais le débit d'une connexion unique.</div></div>
+    </section>
+
+    <!-- ============ DHCP ============ -->
+    <section class="mod" id="dhcp">
+      <div class="mod-head"><span class="mod-num">N04</span><h2>DHCP — attribution automatique</h2></div>
+      <p class="tagline">Quatre échanges en broadcast UDP suffisent à donner à un hôte une adresse, une passerelle et des résolveurs DNS sans intervention manuelle.</p>
+
+      <div class="steps">
+        <div class="step"><div class="n">D</div><div><h5>DISCOVER</h5><p>Le client, dépourvu d'adresse, diffuse une recherche de serveur sur tout le segment.</p></div></div>
+        <div class="step"><div class="n">O</div><div><h5>OFFER</h5><p>Chaque serveur disponible propose une adresse réservée temporairement.</p></div></div>
+        <div class="step"><div class="n">R</div><div><h5>REQUEST</h5><p>Le client re-diffuse son choix — les autres serveurs retirent alors leur offre.</p></div></div>
+        <div class="step"><div class="n">A</div><div><h5>ACK</h5><p>Le serveur choisi confirme le bail et transmet les options associées.</p></div></div>
+      </div>
+
+      <table>
+        <tr><th>Option</th><th>Code</th><th>Rôle</th></tr>
+        <tr><td>Subnet Mask</td><td>1</td><td>masque de sous-réseau</td></tr>
+        <tr><td>Router</td><td>3</td><td>passerelle par défaut</td></tr>
+        <tr><td>DNS Server</td><td>6</td><td>résolveurs à utiliser</td></tr>
+        <tr><td>Lease Time</td><td>51</td><td>durée du bail</td></tr>
+      </table>
+
+      <div class="term-label">Serveur DHCP embarqué sur R1</div>
+      <pre class="term"><span class="k">R1(config)#</span> ip dhcp excluded-address 192.168.10.1 192.168.10.10
+<span class="k">R1(config)#</span> ip dhcp pool VLAN10-HR
+<span class="k">R1(dhcp-config)#</span> network 192.168.10.0 255.255.255.0
+<span class="k">R1(dhcp-config)#</span> default-router 192.168.10.1
+<span class="k">R1(dhcp-config)#</span> dns-server 8.8.8.8 8.8.4.4
+<span class="k">R1(dhcp-config)#</span> lease 7</pre>
+
+      <div class="callout info"><div><b>Relais inter-VLAN</b>Un broadcast DHCP ne franchit pas un routeur. Si le serveur se trouve sur un autre segment, <span class="mono">ip helper-address</span> convertit la diffusion en unicast vers lui — et relaie au passage d'autres services broadcast (TFTP, NetBIOS) sauf restriction explicite.</div></div>
+
+      <div class="threat sev-critique">
+        <div class="th-top">⛔ critique — starvation + serveur DHCP renégat</div>
+        <div class="th-body">Un attaquant épuise le pool légitime avec des milliers de fausses requêtes, puis fait tourner son propre serveur DHCP en s'annonçant comme passerelle — tout le trafic transite alors par lui.
+          <div class="fix"><b>Parade</b><span class="mono">ip dhcp snooping</span> restreint les réponses OFFER/ACK aux seuls ports déclarés « trusted ».</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ DHCPv6 ============ -->
+    <section class="mod" id="dhcpv6">
+      <div class="mod-head"><span class="mod-num">N05</span><h2>DHCPv6 — l'équivalent en IPv6</h2></div>
+      <p class="tagline">IPv6 n'a pas de broadcast : la découverte se fait en multicast, et une bonne partie de la configuration peut se faire sans aucun serveur.</p>
+
+      <div class="grid3">
+        <div class="card"><h4>Stateful</h4><p>Le serveur attribue et journalise chaque adresse — équivalent direct du DHCPv4. Flags RA : <span class="mono">M=1</span>.</p></div>
+        <div class="card"><h4>Stateless</h4><p>Le client génère seul son adresse (SLAAC) ; le serveur ne fournit que des options comme le DNS. Flags RA : <span class="mono">O=1</span>.</p></div>
+        <div class="card"><h4>SLAAC pur</h4><p>Aucun serveur : l'hôte construit son adresse à partir du préfixe annoncé. Flags RA : <span class="mono">M=0, O=0</span>.</p></div>
+      </div>
+
+      <div class="steps">
+        <div class="step"><div class="n">S</div><div><h5>SOLICIT</h5><p>Multicast vers <span class="mono">ff02::1:2</span> pour trouver un serveur.</p></div></div>
+        <div class="step"><div class="n">A</div><div><h5>ADVERTISE</h5><p>Le serveur répond avec les paramètres disponibles.</p></div></div>
+        <div class="step"><div class="n">R</div><div><h5>REQUEST</h5><p>Le client confirme son choix de serveur.</p></div></div>
+        <div class="step"><div class="n">R</div><div><h5>REPLY</h5><p>Attribution finale de l'adresse et des options, en unicast.</p></div></div>
+      </div>
+
+      <p style="font-size:13.5px;color:var(--dim);">Ports UDP <b>546</b> (client) et <b>547</b> (serveur). En entreprise, le couple le plus courant reste SLAAC pour l'adressage + DHCPv6 stateless pour ne distribuer que les résolveurs DNS.</p>
+    </section>
+
+    <!-- ============ DNS ============ -->
+    <section class="mod" id="dns">
+      <div class="mod-head"><span class="mod-num">N06</span><h2>DNS — résolution de noms</h2></div>
+      <p class="tagline">Traduire un nom lisible en adresse routable, en remontant une hiérarchie de serveurs plutôt qu'en interrogeant une base centrale unique.</p>
+
+      <table>
+        <tr><th>Type</th><th>Rôle</th></tr>
+        <tr><td class="mono">A / AAAA</td><td>nom → IPv4 / IPv6</td></tr>
+        <tr><td class="mono">CNAME</td><td>alias vers un nom canonique</td></tr>
+        <tr><td class="mono">MX</td><td>serveur de messagerie</td></tr>
+        <tr><td class="mono">PTR</td><td>IP → nom (résolution inverse)</td></tr>
+        <tr><td class="mono">TXT</td><td>déclarations texte — SPF, DKIM…</td></tr>
+      </table>
+
+      <div class="callout info"><div><b>UDP puis TCP</b>Le port 53 sert la majorité des requêtes en UDP pour la rapidité ; le protocole bascule en TCP dès que la réponse dépasse la limite historique de 512 octets, notamment pour les transferts de zone.</div></div>
+
+      <div class="threat sev-eleve">
+        <div class="th-top">⚠ élevé — empoisonnement de cache</div>
+        <div class="th-body">Une réponse falsifiée injectée dans le cache d'un résolveur redirige silencieusement un nom légitime vers une IP contrôlée par l'attaquant.
+          <div class="fix"><b>Parade</b>DNSSEC signe cryptographiquement la chaîne de résolution ; des TTL courts réduisent la fenêtre d'exposition.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SECURITE ============ -->
+    <section class="mod" id="secu">
+      <div class="mod-head"><span class="mod-num">N07</span><h2>Sécurité L2 / L3 — défense en profondeur</h2></div>
+      <p class="tagline">Aucun contrôle unique n'est suffisant : la segmentation VLAN, le port hardening, l'inspection DHCP/ARP et les ACL se superposent plutôt que de se remplacer.</p>
+
+      <div class="threat sev-critique">
+        <div class="th-top">⛔ critique — saturation de la table CAM</div>
+        <div class="th-body">Un flot d'adresses MAC forgées remplit la table du switch ; celui-ci, incapable de savoir où livrer les trames, les diffuse sur tous les ports — offrant une écoute passive facile.
+          <div class="fix"><b>Parade</b>Port Security limite le nombre de MAC apprises par port et déclenche une action (shutdown, restrict, protect) au-delà.</div>
+        </div>
+      </div>
+
+      <div class="threat sev-eleve">
+        <div class="th-top">⚠ élevé — usurpation ARP</div>
+        <div class="th-body">De fausses réponses ARP associent l'adresse IP de la passerelle à la MAC de l'attaquant : tout le trafic sortant transite alors par lui, en clair.
+          <div class="fix"><b>Parade</b>Dynamic ARP Inspection valide chaque réponse ARP contre la table construite par DHCP Snooping.</div>
+        </div>
+      </div>
+
+      <div class="threat sev-moyen">
+        <div class="th-top">● moyen — VLAN hopping</div>
+        <div class="th-body">Par négociation DTP forcée ou par double marquage 802.1Q, un poste access parvient à atteindre un VLAN qui ne lui est pas destiné.
+          <div class="fix"><b>Parade</b><span class="mono">switchport nonegotiate</span> partout, et un VLAN natif dédié jamais utilisé par un port access.</div>
+        </div>
+      </div>
+
+      <div class="term-label">Verrouillage d'un port utilisateur</div>
+      <pre class="term"><span class="k">SW(config-if)#</span> switchport mode access
+<span class="k">SW(config-if)#</span> switchport port-security
+<span class="k">SW(config-if)#</span> switchport port-security maximum 2
+<span class="k">SW(config-if)#</span> switchport port-security mac-address sticky
+<span class="k">SW(config-if)#</span> switchport port-security violation shutdown</pre>
+
+      <div class="term-label">Inspection DHCP + ARP sur le switch d'accès</div>
+      <pre class="term"><span class="k">SW(config)#</span> ip dhcp snooping
+<span class="k">SW(config)#</span> ip dhcp snooping vlan 10,20,30
+<span class="k">SW(config-if)#</span> ip dhcp snooping trust      <span class="c">! uniquement le port vers le serveur/routeur</span>
+<span class="k">SW(config)#</span> ip arp inspection vlan 10,20,30
+<span class="k">SW(config-if)#</span> ip arp inspection trust</pre>
+
+      <div class="callout tip"><div><b>Ordre de couches utile en dépannage sécurité</b>segmentation VLAN → durcissement des ports → Port Security → DHCP Snooping → DAI → ACL en L3 → SSH/AAA → journalisation horodatée (NTP). Un incident se lit toujours en remontant cette pile.</div></div>
+    </section>
+
+    <!-- ============ CLI LAB ============ -->
+    <section class="mod" id="cli">
+      <div class="mod-head"><span class="mod-num">N08</span><h2>Lab CLI — mini-simulateur</h2></div>
+      <p class="tagline">Objectif : créer le VLAN 30 nommé <span class="mono">MARKET</span> et l'assigner au port fa0/1. Tapez les commandes comme sur un vrai IOS ; les abréviations usuelles sont reconnues.</p>
+
+      <div class="cli-box">
+        <div class="cli-head"><span>SW1 — terminal simulé</span><span id="cliStep">étape 1/4</span></div>
+        <div class="cli-log mono" id="cliLog">
+          <div class="line">Simulateur prêt. Tapez <span class="hint">enable</span> pour commencer.</div>
+        </div>
+        <div class="cli-input-row">
+          <span id="cliPrompt">SW1&gt;</span>
+          <input id="cliInput" type="text" autocomplete="off" spellcheck="false" placeholder="tapez une commande…">
+        </div>
+        <div class="cli-actions">
+          <button class="btn" onclick="cliHint()">💡 indice</button>
+          <button class="btn" onclick="cliReset()">↺ réinitialiser</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ QUIZ ============ -->
+    <section class="mod" id="quiz">
+      <div class="mod-head"><span class="mod-num">N09</span><h2>Auto-évaluation</h2></div>
+      <p class="tagline">6 questions, correction immédiate. Score conservé pour la durée de la session — <span id="quiz-score">0 / 6</span>.</p>
+      <div id="quizContainer"></div>
+    </section>
+
+    <!-- ============ GLOSSAIRE ============ -->
+    <section class="mod" id="glossaire">
+      <div class="mod-head"><span class="mod-num">N10</span><h2>Glossaire</h2></div>
+      <p class="tagline">Filtrez avec la barre de recherche en haut de page, ou parcourez la liste ci-dessous.</p>
+      <div id="glossList"></div>
+    </section>
+
+    <footer>
+      <span>TOPOLOGIE — cahier technique réseaux, conçu et rédigé par Ikram Belhadjer</span>
+      <span>schéma, quiz et simulateur : contenu original</span>
+    </footer>
+
+  </main>
+</div>
+</div>
+
+<script>
+/* ---------------- theme toggle ---------------- */
+document.getElementById('themeBtn').addEventListener('click', ()=>{
+  document.documentElement.classList.toggle('light');
+});
+
+/* ---------------- nav active state + smooth scroll + progress ---------------- */
+const links = document.querySelectorAll('.node-link');
+const sections = document.querySelectorAll('section.mod');
+const visited = new Set();
+const trackable = ['vlan','stp','ether','dhcp','dhcpv6','dns','secu','cli'];
+
+links.forEach(l=>{
+  l.addEventListener('click', ()=>{
+    document.getElementById(l.dataset.t).scrollIntoView({behavior:'smooth'});
+  });
+});
+document.querySelectorAll('.tnode').forEach(n=>{
+  n.addEventListener('click', ()=>{
+    document.getElementById(n.dataset.t).scrollIntoView({behavior:'smooth'});
+  });
+});
+
+function updateProgress(id){
+  if(trackable.includes(id)){
+    visited.add(id);
+    document.getElementById('progText').textContent = visited.size+'/'+trackable.length;
+    document.getElementById('progFill').style.width = (visited.size/trackable.length*100)+'%';
+  }
+}
+
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      links.forEach(l=>l.classList.toggle('active', l.dataset.t===e.target.id));
+      updateProgress(e.target.id);
+    }
+  });
+},{ rootMargin:'-40% 0px -55% 0px' });
+sections.forEach(s=>io.observe(s));
+
+/* animate compare bars once visible */
+const cbars = document.querySelectorAll('.cbar-fill');
+const io2 = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.cbar-fill').forEach(b=> b.style.width = b.dataset.w );
+      io2.unobserve(e.target);
+    }
+  });
+},{threshold:.4});
+document.querySelectorAll('.compare').forEach(c=>io2.observe(c));
+
+/* ---------------- search filter ---------------- */
+const searchInput = document.getElementById('search');
+const searchCount = document.getElementById('searchCount');
+
+function searchableRows(){
+  // exclude header rows (contain <th>) so tables never lose their headers
+  return Array.from(document.querySelectorAll('table tr')).filter(tr => !tr.querySelector('th'));
+}
+
+function runSearch(){
+  const q = searchInput.value.trim().toLowerCase();
+  const targets = [
+    ...document.querySelectorAll('.card, .threat, .gloss-item, .quiz-card, .step, .callout'),
+    ...searchableRows()
+  ];
+
+  if(!q){
+    targets.forEach(el=> el.classList.remove('hidden-by-search'));
+    searchCount.style.display = 'none';
+    return [];
+  }
+
+  let matches = [];
+  targets.forEach(el=>{
+    const hit = el.textContent.toLowerCase().includes(q);
+    el.classList.toggle('hidden-by-search', !hit);
+    if(hit) matches.push(el);
+  });
+
+  searchCount.style.display = 'block';
+  searchCount.textContent = matches.length + (matches.length>1 ? ' résultats' : ' résultat');
+  return matches;
+}
+
+searchInput.addEventListener('input', runSearch);
+searchInput.addEventListener('keydown', (e)=>{
+  if(e.key !== 'Enter') return;
+  const matches = runSearch();
+  if(matches.length){
+    matches[0].scrollIntoView({behavior:'smooth', block:'center'});
+    matches[0].style.outline = '2px solid var(--cyan)';
+    setTimeout(()=>{ matches[0].style.outline=''; }, 1600);
+  }
+});
+
+/* ---------------- glossary ---------------- */
+const glossary = [
+  ["BPDU","Bridge Protocol Data Unit — message échangé par STP pour élire la racine et propager la topologie."],
+  ["Bridge ID","Identifiant combinant priorité et adresse MAC, utilisé pour départager les switches candidats à la racine STP."],
+  ["Native VLAN","Seul VLAN dont les trames circulent sans tag 802.1Q sur un trunk."],
+  ["Port-Channel","Interface logique regroupant plusieurs liens physiques agrégés en EtherChannel."],
+  ["DORA","Séquence DHCPv4 : Discover, Offer, Request, Acknowledge."],
+  ["SARR","Séquence DHCPv6 : Solicit, Advertise, Request, Reply."],
+  ["SLAAC","Auto-configuration d'adresse IPv6 à partir du préfixe annoncé, sans serveur DHCP."],
+  ["DAI","Dynamic ARP Inspection — validation des réponses ARP contre une table de confiance."],
+  ["Root Guard","Fonction empêchant un port de devenir chemin vers un nouveau Root Bridge."],
+  ["Split DNS","Séparation entre résolution interne (annuaire d'entreprise) et résolution publique."],
+  ["TTL (DNS)","Durée pendant laquelle une réponse DNS reste valide en cache."],
+  ["Sticky MAC","Mode Port Security qui apprend et mémorise automatiquement les adresses MAC autorisées."]
+];
+const gl = document.getElementById('glossList');
+glossary.forEach(([t,d])=>{
+  const div = document.createElement('div');
+  div.className='gloss-item';
+  div.innerHTML = `<div class="gloss-term">${t}</div><div class="gloss-def">${d}</div>`;
+  gl.appendChild(div);
+});
+
+/* ---------------- quiz ---------------- */
+const quiz = [
+  {q:"Sur un trunk 802.1Q, comment les trames du VLAN natif sont-elles transmises ?", opts:["Sans tag","Avec un tag double","Chiffrées automatiquement","Elles sont bloquées"], a:0, exp:"Le VLAN natif est par convention le seul non tagué sur un trunk — c'est justement ce qui rend possible l'attaque par double marquage."},
+  {q:"Quelle est la durée de convergence typique de STP classique (802.1D) ?", opts:["<1 seconde","~10 secondes","~50 secondes","~5 minutes"], a:2, exp:"20s (blocking) + 15s (listening) + 15s (learning) ≈ 50 secondes, d'où l'intérêt de RSTP."},
+  {q:"En LACP, quelle combinaison de modes NE forme PAS de canal ?", opts:["active / active","active / passive","passive / passive","active / on"], a:2, exp:"Deux extrémités passives attendent chacune que l'autre initie la négociation — aucune ne le fait."},
+  {q:"Dans le processus DORA, pourquoi le message REQUEST est-il diffusé en broadcast ?", opts:["Par erreur de conception","Pour que tous les serveurs sachent quelle offre a été acceptée","Pour chiffrer la demande","Ce n'est pas le cas, il est en unicast"], a:1, exp:"Le broadcast permet aux serveurs non retenus de retirer leur offre — sans lui, ils garderaient l'adresse réservée inutilement."},
+  {q:"Quel mécanisme protège contre un faux serveur DHCP branché sur le réseau ?", opts:["Port Security seul","DHCP Snooping","STP Root Guard","DNSSEC"], a:1, exp:"DHCP Snooping restreint les réponses serveur (OFFER/ACK) aux ports explicitement déclarés « trusted »."},
+  {q:"Quels flags du Router Advertisement indiquent un DHCPv6 stateful complet ?", opts:["M=0, O=0","M=1, O=0","M=0, O=1","M=1, O=1"], a:3, exp:"M=1 déclenche l'attribution gérée de l'adresse, O=1 ajoute la distribution d'options comme le DNS — ensemble, c'est le mode stateful complet."}
+];
+let score = 0;
+const qc = document.getElementById('quizContainer');
+quiz.forEach((item, qi)=>{
+  const card = document.createElement('div');
+  card.className='quiz-card';
+  card.innerHTML = `<div class="quiz-q">${qi+1}. ${item.q}</div><div class="quiz-opts"></div><div class="quiz-exp"></div>`;
+  const optsDiv = card.querySelector('.quiz-opts');
+  item.opts.forEach((opt, oi)=>{
+    const b = document.createElement('button');
+    b.className='quiz-opt'; b.textContent = opt;
+    b.addEventListener('click', ()=>{
+      if(card.dataset.done) return;
+      card.dataset.done = "1";
+      const all = optsDiv.querySelectorAll('.quiz-opt');
+      all[item.a].classList.add('correct');
+      if(oi !== item.a) b.classList.add('wrong');
+      if(oi === item.a) score++;
+      document.getElementById('quiz-score').textContent = score+' / '+quiz.length;
+      const exp = card.querySelector('.quiz-exp');
+      exp.textContent = item.exp; exp.style.display='block';
+    });
+    optsDiv.appendChild(b);
+  });
+  qc.appendChild(card);
+});
+
+/* ---------------- CLI simulator ---------------- */
+const cliSteps = [
+  {expect:/^en(a(b(l(e)?)?)?)?$/, prompt:"SW1>", next:"SW1#", say:"Mode privilégié activé."},
+  {expect:/^conf(i(g(u(r(e)?)?)?)?)? t(e(r(m(i(n(a(l)?)?)?)?)?)?)?$/, prompt:"SW1#", next:"SW1(config)#", say:"Entrée en mode configuration globale."},
+  {expect:/^vlan 30$/, prompt:"SW1(config)#", next:"SW1(config-vlan)#", say:"VLAN 30 créé."},
+  {expect:/^name market$/i, prompt:"SW1(config-vlan)#", next:"SW1(config-vlan)#", say:"Nom « MARKET » attribué au VLAN 30.", finalHint:true}
+];
+let cliIdx = 0;
+const cliLog = document.getElementById('cliLog');
+const cliPrompt = document.getElementById('cliPrompt');
+const cliInput = document.getElementById('cliInput');
+const cliStepLabel = document.getElementById('cliStep');
+
+function cliPrint(text, cls){
+  const d = document.createElement('div');
+  d.className='line'+(cls?(' '+cls):'');
+  d.textContent = text;
+  cliLog.appendChild(d);
+  cliLog.scrollTop = cliLog.scrollHeight;
+}
+function cliHint(){
+  const goals = ["enable","configure terminal","vlan 30","name MARKET"];
+  cliPrint("indice → "+goals[cliIdx] || "lab terminé", "hint");
+}
+function cliReset(){
+  cliIdx = 0;
+  cliLog.innerHTML = '<div class="line">Simulateur réinitialisé. Tapez <span class="hint">enable</span> pour commencer.</div>';
+  cliPrompt.textContent = "SW1>";
+  cliStepLabel.textContent = "étape 1/4";
+}
+cliInput.addEventListener('keydown', (e)=>{
+  if(e.key !== 'Enter') return;
+  const val = cliInput.value.trim();
+  if(!val) return;
+  cliPrint(cliPrompt.textContent+" "+val);
+  cliInput.value='';
+
+  if(cliIdx >= cliSteps.length){
+    cliPrint("Lab déjà terminé — cliquez « réinitialiser » pour recommencer.", "hint");
+    return;
+  }
+  const step = cliSteps[cliIdx];
+  if(step.expect.test(val)){
+    cliPrint("✔ "+step.say, "ok");
+    cliPrompt.textContent = step.next;
+    cliIdx++;
+    cliStepLabel.textContent = "étape "+Math.min(cliIdx+1,4)+"/4";
+    if(cliIdx === cliSteps.length){
+      cliPrint("🏁 Lab terminé : VLAN 30 « MARKET » correctement créé.", "ok");
+      cliStepLabel.textContent = "terminé";
+    }
+  } else {
+    cliPrint("✘ commande non reconnue à cette étape — essayez « indice ».", "err");
+  }
+});
+</script>
+
+</body>
+</html>
