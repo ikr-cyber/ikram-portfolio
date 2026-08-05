@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Labs de Vulnérabilité</title>
+<style>
+  :root{
+    --bg-deep: #1a0f1c;
+    --bg-panel: #241322;
+    --bg-card: #2c1628;
+    --pink-hot: #ff2e88;
+    --pink-neon: #ff6ec7;
+    --pink-soft: #ffb3d9;
+    --pink-dim: #7a2f56;
+    --text-main: #f6e9f2;
+    --text-dim: #c9a6bd;
+    --line: rgba(255,110,199,0.18);
+    --mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --display: 'Space Grotesk', 'Segoe UI', sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background: radial-gradient(1200px 600px at 80% -10%, #3a1330 0%, var(--bg-deep) 55%);
+    color: var(--text-main);
+    font-family: var(--display);
+    min-height: 100vh;
+    display:flex;
+  }
+
+  /* ---------- SIDEBAR ---------- */
+  #sidebar{
+    width: 280px;
+    flex-shrink:0;
+    background: var(--bg-panel);
+    border-right: 1px solid var(--line);
+    padding: 28px 18px;
+    position: sticky;
+    top:0;
+    height:100vh;
+    overflow-y:auto;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    margin-bottom: 26px;
+  }
+  .brand-mark{
+    width:34px;height:34px;border-radius:8px;
+    background: linear-gradient(135deg, var(--pink-hot), var(--pink-neon));
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700; color:#1a0f1c; font-family: var(--mono);
+    box-shadow: 0 0 18px rgba(255,46,136,0.55);
+  }
+  .brand-text{ font-size:15px; font-weight:700; letter-spacing:0.3px;}
+  .brand-text small{ display:block; font-weight:400; color:var(--text-dim); font-size:11px; letter-spacing:1.5px; text-transform:uppercase;}
+
+  .nav-group-label{
+    font-size:11px; text-transform:uppercase; letter-spacing:1.5px;
+    color: var(--pink-dim); margin: 18px 6px 8px; font-family: var(--mono);
+  }
+  .nav-item{
+    display:flex; gap:10px; align-items:flex-start;
+    padding:10px 10px; border-radius:10px; cursor:pointer;
+    color: var(--text-dim); text-decoration:none;
+    font-size: 13.5px; line-height:1.35;
+    border: 1px solid transparent;
+    transition: all .15s ease;
+  }
+  .nav-item .idx{
+    font-family: var(--mono); font-size:11px; color: var(--pink-neon);
+    min-width: 20px;
+  }
+  .nav-item:hover{ background: rgba(255,110,199,0.08); color: var(--text-main);}
+  .nav-item.active{
+    background: linear-gradient(90deg, rgba(255,46,136,0.16), transparent);
+    border-left: 2px solid var(--pink-hot);
+    color: var(--text-main);
+    font-weight:600;
+  }
+
+  /* ---------- MAIN ---------- */
+  main{ flex:1; padding: 0; max-width: 980px; }
+  .hero{
+    padding: 70px 56px 40px;
+    border-bottom: 1px solid var(--line);
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::after{
+    content:"";
+    position:absolute; left:0; right:0; top:0; height:2px;
+    background: linear-gradient(90deg, transparent, var(--pink-hot), transparent);
+    animation: sweep 4.5s linear infinite;
+  }
+  @keyframes sweep{
+    0%{ transform: translateX(-100%);} 100%{ transform: translateX(100%);}
+  }
+  .eyebrow{
+    font-family: var(--mono); font-size:12px; color: var(--pink-neon);
+    letter-spacing: 3px; text-transform:uppercase; margin-bottom:14px;
+  }
+  h1.title{
+    font-size: 42px; margin: 0 0 16px; line-height:1.1;
+    background: linear-gradient(120deg, var(--text-main), var(--pink-soft));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .lede{ color: var(--text-dim); font-size:15.5px; max-width:560px; line-height:1.6;}
+  .stat-row{ display:flex; gap:28px; margin-top:28px; flex-wrap:wrap;}
+  .stat b{ display:block; font-family: var(--mono); font-size:26px; color: var(--pink-neon);}
+  .stat span{ font-size:12px; color: var(--text-dim); text-transform:uppercase; letter-spacing:1px;}
+
+  .lab-section{
+    padding: 54px 56px;
+    border-bottom: 1px solid var(--line);
+    scroll-margin-top: 20px;
+  }
+  .lab-head{ display:flex; align-items:baseline; gap:14px; margin-bottom:6px;}
+  .lab-num{
+    font-family: var(--mono); color: var(--pink-hot); font-size:14px;
+    border:1px solid var(--pink-dim); padding:2px 8px; border-radius:20px;
+  }
+  .lab-title{ font-size:26px; margin:0; }
+  .lab-tools{ color:var(--text-dim); font-size:13px; margin: 6px 0 30px; font-family: var(--mono);}
+  .lab-tools span{ color: var(--pink-soft);}
+
+  .obj-list{ list-style:none; margin:0 0 34px; padding:0;}
+  .obj-list li{
+    padding: 10px 0 10px 26px; position:relative; color: var(--text-main); font-size:14.5px;
+    border-bottom: 1px dashed rgba(255,110,199,0.12);
+  }
+  .obj-list li::before{
+    content:"▸"; position:absolute; left:0; color: var(--pink-hot);
+  }
+
+  /* accordion steps */
+  .step{
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    background: var(--bg-card);
+    overflow:hidden;
+  }
+  .step summary{
+    list-style:none; cursor:pointer; padding: 16px 18px;
+    display:flex; align-items:center; gap:14px;
+    font-weight:600; font-size:14.5px;
+  }
+  .step summary::-webkit-details-marker{ display:none; }
+  .step summary .num{
+    font-family: var(--mono); width:26px; height:26px; border-radius:50%;
+    background: var(--pink-dim); color: var(--text-main);
+    display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0;
+  }
+  .step[open] summary .num{ background: var(--pink-hot); box-shadow: 0 0 12px rgba(255,46,136,.7);}
+  .step summary::after{
+    content:"＋"; margin-left:auto; color: var(--pink-neon); font-family: var(--mono);
+  }
+  .step[open] summary::after{ content:"－"; }
+  .step-body{ padding: 0 18px 18px 58px; color: var(--text-dim); font-size:14px; line-height:1.65;}
+  .step-body p{ margin: 8px 0;}
+  .step-body .note{
+    margin-top:10px; padding:10px 12px; border-left:3px solid var(--pink-hot);
+    background: rgba(255,46,136,0.07); border-radius: 0 8px 8px 0; font-size:13.3px;
+  }
+
+  code.term, pre.term{
+    display:block; background:#12080f; border:1px solid var(--pink-dim);
+    color: var(--pink-neon); font-family: var(--mono); font-size:13px;
+    padding: 12px 14px; border-radius:8px; margin: 10px 0; overflow-x:auto;
+    box-shadow: inset 0 0 20px rgba(255,46,136,0.06);
+  }
+  code.term::before{ content:"$ "; color: var(--pink-hot);}
+
+  table.cmd-table{ width:100%; border-collapse: collapse; margin: 18px 0 8px; font-size:13.3px;}
+  table.cmd-table th{
+    text-align:left; color: var(--pink-neon); font-family: var(--mono); font-weight:600;
+    padding: 8px 10px; border-bottom: 1px solid var(--pink-dim); font-size:11.5px; text-transform:uppercase; letter-spacing:.5px;
+  }
+  table.cmd-table td{
+    padding: 10px; border-bottom: 1px solid var(--line); color: var(--text-dim); vertical-align:top;
+  }
+  table.cmd-table td:first-child{ font-family: var(--mono); color: var(--pink-soft); white-space:nowrap;}
+  table.cmd-table tr:hover td{ background: rgba(255,110,199,0.05); }
+
+  .conclusion-card{
+    margin-top: 30px; padding: 22px 24px; border-radius: 14px;
+    background: linear-gradient(160deg, rgba(255,46,136,0.10), rgba(255,110,199,0.02));
+    border: 1px solid var(--pink-dim);
+  }
+  .conclusion-card h4{ margin:0 0 12px; color: var(--pink-soft); font-size:14px; text-transform:uppercase; letter-spacing:1px; font-family: var(--mono);}
+  .conclusion-card ul{ margin:0; padding-left:20px; color: var(--text-dim); font-size:14px; line-height:1.7;}
+  .conclusion-card strong{ color: var(--text-main); }
+
+  .crucial{
+    margin-top:16px; font-size:13.5px; padding:12px 14px; border-radius:8px;
+    background: rgba(255,178,217,0.08); border: 1px dashed var(--pink-neon); color: var(--pink-soft);
+  }
+
+  footer{
+    padding: 40px 56px 60px; color: var(--text-dim); font-size:12.5px; text-align:center;
+  }
+  footer .warn{ color: var(--pink-neon); margin-top:8px;}
+
+  @media (max-width: 860px){
+    body{ flex-direction:column; }
+    #sidebar{ width:100%; height:auto; position:relative; }
+    .hero, .lab-section{ padding: 36px 22px; }
+    h1.title{ font-size: 30px; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="sidebar">
+  <div class="brand">
+    <div class="brand-mark">◈</div>
+    <div class="brand-text">Labs de Vulnérabilité</div>
+  </div>
+  <div class="nav-group-label">Navigation</div>
+  <a class="nav-item" href="#hero"><span class="idx">◆</span> Accueil</a>
+  <div class="nav-group-label">Labs</div>
+  <div id="nav-list"></div>
+</nav>
+
+<main>
+  <section class="hero" id="hero">
+    <h1 class="title">Labs de Vulnérabilité</h1>
+  </section>
+
+  <div id="labs-container"></div>
+
+  <footer>
+    Labs de Vulnérabilité
+    <div class="warn">⚠ Contenu strictement éducatif — à utiliser uniquement dans des environnements autorisés.</div>
+  </footer>
+</main>
+
+<script>
+const LABS = [
+{
+  title: "Scan de Vulnérabilités avec Kali",
+  tools: "Kali Linux · Nmap · GVM",
+  objectifs: [
+    "Découvrir les ports et services ouverts avec Nmap",
+    "Identifier les vulnérabilités connues avec le script Nmap Vulners",
+    "Utiliser Greenbone Vulnerability Management (GVM) pour un scan complet",
+    "Comparer les approches de Nmap et GVM"
+  ],
+  contexte: "Dans un environnement réel, toujours obtenir une autorisation écrite avant de scanner un système qui ne vous appartient pas.",
+  steps: [
+    {t:"Préparation de l'environnement", body:"Démarrer Kali Linux et vérifier la connectivité avec la cible.", cmd:"ping -c5 10.6.6.23", note:"Le host doit répondre. Sinon, vérifier la connectivité réseau."},
+    {t:"Scan des ports avec Nmap", body:"Identifier les ports ouverts et les services sur la cible.", cmd:"nmap -sV 10.6.6.23", note:"Observer la liste des ports ouverts (21, 22, 53, 80…) et les versions."},
+    {t:"Détection du système d'exploitation", body:"Identifier l'OS de la cible.", cmd:"sudo nmap -O 10.6.6.23", note:"L'option -O nécessite des privilèges root."},
+    {t:"Recherche de vulnérabilités (Vulners)", body:"Trouver les CVEs connues liées aux services détectés.", cmd:"nmap -sV --script vulners --script-args mincvss=4 10.6.6.23", note:"Noter les services avec un score CVSS ≥ 5."},
+    {t:"Installation et vérification de GVM", body:"Vérifier que GVM est correctement installé.", cmd:"sudo gvm-check-setup"},
+    {t:"Lancement de GVM", body:"Démarrer le service et accéder à l'interface web.", cmd:"sudo gvm-start", note:"Interface disponible sur https://127.0.0.1:9392"}
+  ],
+  cmdTable: [
+    ["nmap -sV [cible]","Scan de version des services","Première étape de reconnaissance"],
+    ["nmap -O [cible]","Détection du système d'exploitation","Nécessite sudo"],
+    ["nmap --script vulners [cible]","Recherche de vulnérabilités","Utiliser mincvss pour filtrer"],
+    ["sudo gvm-check-setup","Vérifie l'installation de GVM","Avant de lancer GVM"],
+    ["sudo gvm-start","Démarre GVM","Accès via https://127.0.0.1:9392"]
+  ],
+  conclusions: [
+    "<strong>Nmap</strong> excelle pour la reconnaissance rapide et l'énumération",
+    "<strong>GVM</strong> fournit une analyse plus approfondie avec interface graphique",
+    "Le script <strong>Vulners</strong> lie les services aux CVEs connues",
+    "Le paramètre <strong>mincvss</strong> filtre les résultats par sévérité"
+  ],
+  crucial: "Toujours maintenir à jour les bases de vulnérabilités (sudo gvm-feed-update)."
+},
+{
+  title: "Sources d'Information sur les Vulnérabilités",
+  tools: "cve.org · cwe.mitre.org · nvd.nist.gov · first.org",
+  objectifs: [
+    "Comprendre le système CVE (Common Vulnerabilities and Exposures)",
+    "Explorer les CWE (Common Weakness Enumeration)",
+    "Utiliser la base NVD (National Vulnerability Database) du NIST",
+    "Comprendre le système de scoring CVSS"
+  ],
+  steps: [
+    {t:"Exploration du site CVE", body:"Sur cve.org, consulter About > Overview pour comprendre la mission du programme, et noter qui attribue les identifiants CVE."},
+    {t:"Recherche de CVEs spécifiques", body:"Rechercher CVE-2021-41617, CVE-2020-14145, CVE-2019-16905, CVE-2019-6111, CVE-2019-6110, CVE-2019-6109 — noter versions affectées, date de mise à jour, score CVSS."},
+    {t:"Exploration des CWE", body:"Sur cwe.mitre.org, comprendre la différence CVE/CWE et retrouver les CWE-ID associés aux CVEs précédentes."},
+    {t:"Utilisation de la NVD (NIST)", body:"Comprendre la relation entre NVD et CVEs, consulter le tableau de bord et les dernières vulnérabilités scorées."},
+    {t:"Compréhension du CVSS", body:"Sur first.org/cvss, étudier les 3 métriques (Base, Temporal, Environmental) et utiliser le calculateur 3.1 sur les CVEs étudiées."}
+  ],
+  cmdTable: [
+    ["cve.org","Base de données principale des vulnérabilités","Référence pour tout identifiant CVE"],
+    ["cwe.mitre.org","Classification des faiblesses logicielles","Catégories génériques de vulnérabilités"],
+    ["nvd.nist.gov","Base nationale des vulnérabilités (USA)","Agrège et documente les CVEs"],
+    ["first.org/cvss/calculator/3.1","Calculateur de score CVSS","8 métriques du groupe Base"],
+    ["talosintelligence.com","Réputation de fichiers et IPs","Vérification de réputation"],
+    ["virustotal.com","Analyse de fichiers et URLs suspects","Multi-moteurs antivirus"]
+  ],
+  conclusions: [
+    "<strong>CVE</strong> identifie une vulnérabilité spécifique → <strong>CWE</strong> catégorise le type de faiblesse → <strong>CVSS</strong> évalue la sévérité → <strong>NVD</strong> agrège tout",
+    "Une CVE peut référencer une faille XSS dans un produit précis, correspondant à la CWE-79 (Cross-site Scripting)"
+  ],
+  crucial: "Un score CVSS ≥ 7.0 indique une vulnérabilité haute sévérité nécessitant une attention prioritaire."
+},
+{
+  title: "Social Engineer Toolkit (SET)",
+  tools: "Kali Linux · SET",
+  objectifs: [
+    "Découvrir l'interface et les fonctionnalités de SET",
+    "Cloner un site web pour capturer des identifiants",
+    "Comprendre comment fonctionnent les attaques d'ingénierie sociale",
+    "Apprendre les contre-mesures appropriées"
+  ],
+  contexte: "SET ne doit être utilisé que dans des environnements contrôlés avec autorisation explicite. L'utilisation non autorisée est illégale.",
+  steps: [
+    {t:"Lancement de SET", body:"SET nécessite les privilèges root.", cmd:"sudo setoolkit", note:"Accepter les conditions d'utilisation (taper 'y')."},
+    {t:"Exploration du menu principal", body:"1) Social-Engineering Attacks · 2) Penetration Testing · 3) Third Party Modules · 4) Update SET."},
+    {t:"Sélection du vecteur d'attaque", body:"Option 1 → 2) Website Attack Vectors → 3) Credential Harvester Attack → 2) Site Cloner."},
+    {t:"Clonage d'un site web", body:"Saisir l'URL du site à cloner. SET le sert ensuite sur le port 80 de la machine Kali.", cmd:"Enter the url to clone: http://DVWA.vm"},
+    {t:"Création d'un piège", body:"Créer une page HTML de redirection vers le site cloné (balise meta refresh)."},
+    {t:"Capture et analyse des identifiants", body:"Lorsqu'une victime saisit ses identifiants, SET les capture en clair dans le terminal.", note:"WE GOT A HIT! username / password capturés."}
+  ],
+  extraSection: {
+    title: "Aspects éthiques & contre-mesures",
+    blocks: [
+      {h:"Utilisation éthique", items:["Tests de pénétration autorisés","Formation en sécurité informatique","Environnements de laboratoire contrôlés","Consentement écrit des parties concernées"]},
+      {h:"Se protéger — utilisateurs", items:["Vérifier l'URL dans la barre d'adresse","Activer l'authentification à deux facteurs (2FA)","Ne pas cliquer sur des liens suspects","Vérifier les certificats SSL"]},
+      {h:"Indicateurs d'un site cloné", items:["URL légèrement différente (faceb00k.com)","Certificat SSL absent ou auto-signé","Éléments graphiques de mauvaise qualité","Champs de formulaire au comportement anormal"]}
+    ]
+  },
+  conclusions: [
+    "SET est un puissant framework d'ingénierie sociale",
+    "Il exploite la vulnérabilité <strong>humaine</strong> plus que technique",
+    "Le clonage de site est une méthode efficace pour capturer des identifiants",
+    "La sensibilisation des utilisateurs reste la meilleure défense"
+  ],
+  crucial: "L'ingénierie sociale repose sur la manipulation psychologique — la formation est la meilleure protection."
+},
+{
+  title: "Découverte de Nmap",
+  tools: "CyberOps VM · Nmap",
+  objectifs: [
+    "Apprendre à utiliser les pages de manuel de Nmap",
+    "Scanner les ports locaux et distants",
+    "Identifier services, versions et systèmes d'exploitation",
+    "Comprendre l'utilité de Nmap pour la sécurité réseau"
+  ],
+  steps: [
+    {t:"Consultation du manuel", body:"Ouvrir le manuel de Nmap dans un terminal.", cmd:"man nmap", note:"Flèches pour naviguer, / pour rechercher, q pour quitter."},
+    {t:"Recherche dans le manuel", body:"Rechercher le mot 'example' pour voir des cas d'usage.", cmd:"/example"},
+    {t:"Scan de l'hôte local", body:"Scanner sa propre machine pour voir les services actifs.", cmd:"nmap -A -T4 localhost", note:"Observer ports, services, versions et infos système."},
+    {t:"Détermination de l'adresse réseau", body:"Identifier son IP et son masque de sous-réseau.", cmd:"ip address", note:"Ex: 10.0.2.15/24 → réseau 10.0.2.0/24."},
+    {t:"Scan du réseau local", body:"Scanner tous les hôtes du réseau local.", cmd:"nmap -A -T4 10.0.2.0/24", note:"Ne scanner que les réseaux autorisés."},
+    {t:"Scan d'un serveur distant autorisé", body:"Tester Nmap sur un serveur public de test.", cmd:"nmap -A -T4 scanme.nmap.org"}
+  ],
+  cmdTable: [
+    ["man nmap","Manuel complet de Nmap","/ pour rechercher, q pour quitter"],
+    ["nmap -A -T4 localhost","Scan agressif OS + versions","-A agressif, -T4 timing rapide"],
+    ["ip address","Adresses IP de l'interface","Identifier le réseau local"],
+    ["nmap -A -T4 [réseau]/[masque]","Scan de tout un réseau","Ex: 10.0.2.0/24"],
+    ["nmap scanme.nmap.org","Scan du site de test autorisé","Maintenu par l'équipe Nmap"]
+  ],
+  conclusions: [
+    "Nmap est l'outil de référence pour la découverte réseau",
+    "Les pages de manuel sont une ressource précieuse à maîtriser",
+    "Le scan réseau doit toujours être autorisé",
+    "scanme.nmap.org est le seul terrain de test public légitime"
+  ],
+  crucial: "Toujours obtenir une autorisation écrite avant de scanner un réseau qui n'est pas le vôtre."
+},
+{
+  title: "Injection SQL avec Wireshark",
+  tools: "CyberOps VM · Wireshark",
+  objectifs: [
+    "Ouvrir et analyser un fichier PCAP contenant une attaque SQL",
+    "Identifier les différentes étapes d'une injection SQL",
+    "Comprendre comment les attaquants extraient des données",
+    "Apprendre les méthodes de prévention des injections SQL"
+  ],
+  steps: [
+    {t:"Ouverture du PCAP", body:"Ouvrir SQL_Lab.pcap dans Wireshark.", cmd:"Applications → CyberOps → Wireshark → SQL_Lab.pcap", note:"Adresses impliquées : 10.0.2.4 et 10.0.2.15."},
+    {t:"Début de l'attaque", body:"Paquet 13 → Follow HTTP Stream. Rechercher '1=1' : l'appli répond avec des données au lieu d'une erreur."},
+    {t:"Extraction d'informations", body:"Paquet 19 → 'union select database(), user()' révèle la base (dwva) et l'utilisateur (root@localhost)."},
+    {t:"Identification de la version", body:"Paquet 22 → 'version()' révèle MySQL 5.7.12-0."},
+    {t:"Extraction des tables", body:"Paquet 25 → 'information_schema.tables' liste les tables disponibles."},
+    {t:"Vol des mots de passe", body:"Paquet 28 → hashs MD5 des mots de passe visibles en clair, à tester sur crackstation.net."}
+  ],
+  extraSection: {
+    title: "Anatomie de l'attaque",
+    blocks: [
+      {h:"Étapes de l'attaque", items:["Reconnaissance avec 1' OR 1=1 --","Extraction des métadonnées (UNION SELECT database(), user())","Identification de la version (version())","Cartographie via information_schema.tables","Extraction des données sensibles"]},
+      {h:"Prévention", items:["Requêtes paramétrées (Prepared Statements)","Validation stricte des entrées utilisateur","Principe du moindre privilège sur les comptes BD","Déploiement d'un WAF","Encodage systématique des sorties"]}
+    ]
+  },
+  conclusions: [
+    "Les injections SQL permettent d'exécuter du code SQL arbitraire",
+    "Elles mènent à divulgation, modification ou suppression de données",
+    "L'attaquant procède par étapes structurées pour explorer la base",
+    "<strong>information_schema</strong> contient les métadonnées exploitables"
+  ],
+  crucial: "Les injections SQL sont la vulnérabilité web #1 selon l'OWASP Top 10."
+},
+{
+  title: "Extraction de Fichiers depuis PCAP",
+  tools: "Wireshark · VirusTotal",
+  objectifs: [
+    "Extraire des fichiers téléchargés depuis un fichier PCAP",
+    "Analyser les fichiers avec Wireshark et VirusTotal",
+    "Comprendre le comportement des malwares",
+    "Apprendre les techniques d'analyse de malware"
+  ],
+  steps: [
+    {t:"Ouverture du PCAP", body:"Ouvrir nimda.download.pcap et analyser le 4e paquet (GET du malware).", cmd:"wireshark nimda.download.pcap &"},
+    {t:"Examen du flux TCP", body:"Sélectionner le SYN initial → Follow → TCP Stream pour voir les données binaires."},
+    {t:"Extraction du fichier", body:"File → Export Objects → HTTP → sélectionner W32.Nimda.Amm.exe → Save As."},
+    {t:"Vérification du type de fichier", body:"Identifier le type réel du fichier extrait.", cmd:"file W32.Nimda.Amm.exe", note:"Résultat attendu : PE32+ executable (console) x86-64."},
+    {t:"Analyse VirusTotal", body:"Uploader le fichier ou son hash sur virustotal.com et analyser les résultats multi-moteurs."},
+    {t:"Calcul des hashs", body:"Générer les empreintes uniques du fichier.", cmd:"sha256sum W32.Nimda.Amm.exe && md5sum W32.Nimda.Amm.exe"}
+  ],
+  cmdTable: [
+    ["File → Export Objects → HTTP","Extraction de fichiers depuis PCAP","Wireshark"],
+    ["virustotal.com","Analyse multi-moteurs de fichiers","Upload ou hash"],
+    ["file [fichier]","Identification du type de fichier","Détecte le vrai format"],
+    ["sha256sum / md5sum [fichier]","Génération de hashs","Identifiants uniques du malware"],
+    ["talosintelligence.com","Réputation de fichiers et IPs","Vérification croisée"],
+    ["any.run","Sandbox d'exécution de malware","Analyse dynamique isolée"]
+  ],
+  conclusions: [
+    "Les captures réseau contiennent souvent les fichiers téléchargés",
+    "Wireshark permet d'extraire facilement ces fichiers",
+    "Les hashs servent d'empreintes digitales pour les malwares",
+    "VirusTotal permet une analyse rapide multi-moteurs"
+  ],
+  crucial: "Ne jamais exécuter un malware sur un système de production — toujours utiliser un environnement isolé (sandbox)."
+},
+{
+  title: "Investigation Malware avec Security Onion",
+  tools: "Security Onion · Kibana · Sguil",
+  objectifs: [
+    "Utiliser Kibana pour visualiser et analyser les logs",
+    "Investiguer les alertes avec Sguil",
+    "Analyser le trafic avec Wireshark",
+    "Identifier les indicateurs de compromission (IOCs)"
+  ],
+  steps: [
+    {t:"Accès à Kibana et filtrage temporel", body:"Se connecter (analyst/cyberops), définir la plage absolue (janvier 2017) et zoomer sur le point de données."},
+    {t:"Analyse des alertes NIDS", body:"Ouvrir le tableau NIDS Alert Data, zoomer sur l'événement, cliquer le premier point de la timeline."},
+    {t:"Collecte des informations clés", body:"Noter heure, IP source/destination, port, service, classification de l'alerte, pays de destination."},
+    {t:"Investigation avec Sguil", body:"Se connecter (analyst/cyberops), localiser les alertes du 27/01/2017, cocher 'Show Packet Data' et 'Show Rule'."},
+    {t:"Examen des transcriptions", body:"Clic droit sur une alerte → Transcript : analyser requêtes/réponses HTTP, URLs, référents, user-agents."},
+    {t:"Extraction et analyse des fichiers", body:"Clic droit → Wireshark → Export Objects → HTTP. Extraire HTML/JS/SWF, calculer les hashs, vérifier sur VirusTotal."}
+  ],
+  cmdTable: [
+    ["Kibana","Visualisation et analyse des logs","Tableaux de bord et recherches"],
+    ["Sguil","Console d'analyse des alertes","Temps réel, transcriptions, pivots"],
+    ["Wireshark","Analyse détaillée du trafic","Inspection et extraction de fichiers"],
+    ["CapMe","Visualisation des sessions","Transcriptions HTTP/HTTPS"],
+    ["NetworkMiner","Analyse forensique réseau","Reconstruction de fichiers"],
+    ["Snort / Suricata","Moteur NIDS","Détection et génération d'alertes"]
+  ],
+  conclusions: [
+    "Security Onion est une distribution complète de sécurité réseau",
+    "Kibana permet la visualisation et l'analyse des logs",
+    "Sguil est la console centrale pour les analystes SOC",
+    "Le pivot entre outils est essentiel pour l'investigation"
+  ],
+  crucial: "Security Onion est utilisé par de nombreux SOC pour la surveillance et l'investigation de sécurité."
+},
+{
+  title: "Attaque sur Hôte Windows",
+  tools: "Security Onion · Sguil · Kibana",
+  objectifs: [
+    "Enquêter sur une infection malware avec Sguil",
+    "Analyser les logs avec Kibana",
+    "Identifier l'hôte compromis et l'utilisateur",
+    "Déterminer le type de malware et son comportement"
+  ],
+  steps: [
+    {t:"Localisation des alertes", body:"Se connecter à Sguil, localiser le groupe d'alertes du 19/03/2019, noter les horodatages."},
+    {t:"Analyse de la première alerte", body:"Alerte ID 5.439 : cocher 'Show Packet Data' et 'Show Rule', noter IP/ports, type 'DNS Update from External net'."},
+    {t:"Téléchargements de fichiers", body:"Alertes 5.440+ : téléchargement de test1.exe. Clic droit → Transcript, puis export via Wireshark."},
+    {t:"Calcul et vérification des hashs", body:"Générer les hashs et les soumettre à Cisco Talos / VirusTotal.", cmd:"sha256sum test1.exe && sha256sum f4.exe"},
+    {t:"Analyse avec Kibana", body:"Filtrer sur mars 2019, examiner les logs HTTP, identifier URLs et fichiers téléchargés."},
+    {t:"Investigation du RAT Remcos", body:"Alerte 5.480 : Remcos RAT Checkin — examiner la transcription (communication chiffrée) et rechercher les caractéristiques du RAT."}
+  ],
+  extraSection: {
+    title: "Chronologie & IOCs",
+    blocks: [
+      {h:"Chronologie de l'attaque", items:["01:45:03 — Mise à jour DNS suspecte","01:45:28 — Téléchargement de test1.exe","01:45:53 — Communication Remcos RAT","01:46:14 — Téléchargement de f4.exe","04:54:34 — Dernière alerte (SSL blacklisté)"]},
+      {h:"Indicateurs de compromission", items:["Hôte compromis : Bobby-tiger-PC (10.0.90.215)","Serveurs C2 : 209.141.34.8, 217.23.14.81","Domaines : littletigers.info, totpotpot1.online","Ports : 2404 (Remcos), 53 (DNS), 80 (HTTP)"]}
+    ]
+  },
+  conclusions: [
+    "Les attaques Windows suivent souvent des patterns similaires",
+    "Les RATs (Remote Access Trojans) sont très courants",
+    "La communication chiffrée rend la détection plus difficile",
+    "Les hashs de fichiers restent essentiels pour l'identification"
+  ],
+  crucial: "Les attaques Windows représentent la majorité des incidents de sécurité — la défense en profondeur est essentielle."
+}
+];
+
+const navList = document.getElementById('nav-list');
+const labsContainer = document.getElementById('labs-container');
+
+LABS.forEach((lab, i) => {
+  const id = 'lab-' + (i+1);
+
+  // nav item
+  const a = document.createElement('a');
+  a.className = 'nav-item';
+  a.href = '#' + id;
+  a.innerHTML = `<span class="idx">0${i+1}</span> ${lab.title}`;
+  navList.appendChild(a);
+
+  // section
+  const sec = document.createElement('section');
+  sec.className = 'lab-section';
+  sec.id = id;
+
+  let stepsHtml = lab.steps.map((s, si) => `
+    <details class="step" ${si===0 ? 'open' : ''}>
+      <summary><span class="num">${si+1}</span> ${s.t}</summary>
+      <div class="step-body">
+        <p>${s.body}</p>
+        ${s.cmd ? `<code class="term">${s.cmd}</code>` : ''}
+        ${s.note ? `<div class="note">${s.note}</div>` : ''}
+      </div>
+    </details>
+  `).join('');
+
+  let cmdTableHtml = lab.cmdTable ? `
+    <table class="cmd-table">
+      <thead><tr><th>Commande / Ressource</th><th>Description</th><th>À retenir</th></tr></thead>
+      <tbody>
+        ${lab.cmdTable.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')}
+      </tbody>
+    </table>` : '';
+
+  let extraHtml = lab.extraSection ? `
+    <div class="conclusion-card" style="margin-top:24px;">
+      <h4>${lab.extraSection.title}</h4>
+      ${lab.extraSection.blocks.map(b => `
+        <p style="color:var(--text-main); font-weight:600; margin:14px 0 6px;">${b.h}</p>
+        <ul>${b.items.map(it => `<li>${it}</li>`).join('')}</ul>
+      `).join('')}
+    </div>` : '';
+
+  sec.innerHTML = `
+    <div class="lab-head">
+      <span class="lab-num">LAB ${i+1}</span>
+      <h2 class="lab-title">${lab.title}</h2>
+    </div>
+    <div class="lab-tools">Outils : <span>${lab.tools}</span></div>
+    <ul class="obj-list">${lab.objectifs.map(o => `<li>${o}</li>`).join('')}</ul>
+    ${lab.contexte ? `<div class="crucial" style="margin-bottom:26px;">${lab.contexte}</div>` : ''}
+    ${stepsHtml}
+    ${cmdTableHtml}
+    ${extraHtml}
+    <div class="conclusion-card">
+      <h4>Conclusions & informations essentielles</h4>
+      <ul>${lab.conclusions.map(c => `<li>${c}</li>`).join('')}</ul>
+    </div>
+    <div class="crucial">${lab.crucial}</div>
+  `;
+  labsContainer.appendChild(sec);
+});
+
+// active nav highlight on scroll
+const navItems = Array.from(document.querySelectorAll('#sidebar .nav-item'));
+const sections = ['hero', ...LABS.map((_, i) => 'lab-' + (i+1))].map(id => document.getElementById(id));
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      navItems.forEach(n => n.classList.remove('active'));
+      const match = navItems.find(n => n.getAttribute('href') === '#' + e.target.id);
+      if(match) match.classList.add('active');
+    }
+  });
+}, { rootMargin: '-40% 0px -50% 0px' });
+sections.forEach(s => s && io.observe(s));
+</script>
+</body>
+</html>
