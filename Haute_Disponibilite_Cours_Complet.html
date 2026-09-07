@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Haute Disponibilité</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:Arial,sans-serif;background:#f5f5f5;padding:30px 20px;color:#000;line-height:1.8}
+.container{max-width:950px;margin:0 auto;background:#fff;border-left:8px solid #16a34a;box-shadow:0 4px 20px rgba(0,0,0,0.1);border-radius:4px}
+.notebook-lines{background-image:repeating-linear-gradient(to right,#16a34a 0px,#16a34a 2px,transparent 2px,transparent 40px),repeating-linear-gradient(to bottom,transparent 0px,transparent 29px,#f0f0f0 29px,#f0f0f0 30px);background-position:0 0,0 0;padding:50px}
+.header{border-bottom:3px solid #16a34a;padding-bottom:25px;margin-bottom:40px;text-align:center}
+.title{font-size:42px;font-weight:700;color:#16a34a;margin-bottom:10px}
+.by-author{font-size:16px;color:#000;font-weight:600;margin:8px 0}
+.tagline{font-size:13px;color:#000;font-style:italic}
+.toc{background:#f0fdf4;border:2px solid #16a34a;border-radius:4px;padding:25px;margin-bottom:45px}
+.toc-title{font-size:18px;font-weight:700;color:#16a34a;margin-bottom:15px}
+.toc-list{list-style:none;columns:2;gap:30px}
+.toc-list li{font-size:14px;margin-bottom:10px;color:#000;padding:6px 0;border-bottom:1px dotted #16a34a;break-inside:avoid}
+.toc-list a{color:#16a34a;text-decoration:none;font-weight:600;cursor:pointer}
+.toc-list a:hover{text-decoration:underline}
+.section{margin-bottom:50px}
+.section-number{display:inline-block;width:36px;height:36px;background:#16a34a;color:#fff;border-radius:50%;text-align:center;line-height:36px;font-weight:700;font-size:16px;margin-right:12px}
+.section-title{font-size:28px;font-weight:700;color:#16a34a;margin-bottom:18px;display:flex;align-items:center;padding-bottom:10px;border-bottom:2px solid #16a34a;scroll-margin-top:50px}
+.section-content{margin-left:50px;color:#000}
+.definition{background:#fafafa;border-left:4px solid #16a34a;padding:15px 18px;margin:18px 0;border-radius:2px;font-size:14px}
+.definition-label{color:#16a34a;font-weight:700;margin-bottom:6px;display:block}
+.key-concept{background:#fafafa;border:2px solid #16a34a;padding:18px;margin:18px 0;border-radius:4px;font-size:14px}
+.key-concept-title{font-weight:700;color:#16a34a;margin-bottom:12px;font-size:15px;display:block}
+.diagram-box{background:#fafafa;border:2px dashed #16a34a;padding:18px;margin:18px 0;border-radius:4px;font-family:'Courier New',monospace;font-size:13px;color:#000;overflow-x:auto;line-height:1.7;white-space:pre-wrap;word-wrap:break-word}
+.table-wrapper{overflow-x:auto;margin:18px 0}
+table{width:100%;border-collapse:collapse;font-size:14px;background:#fff}
+th{background:#16a34a;color:#fff;padding:12px;text-align:left;font-weight:700;border:1px solid #16a34a}
+td{border:1px solid #ddd;padding:12px;color:#000}
+tr:nth-child(even){background:#fafafa}
+.highlight-fr{color:#16a34a;font-weight:700}
+.example{background:#fafafa;border-left:4px solid #22c55e;padding:15px;margin:15px 0;font-size:14px;border-radius:2px;color:#000}
+.note{background:#fafafa;border-left:4px solid #f59e0b;padding:15px;margin:15px 0;font-size:14px;border-radius:2px;color:#000}
+.paragraph{margin:15px 0;text-align:justify;font-size:15px;color:#000;line-height:1.9}
+.footer{border-top:2px solid #16a34a;margin-top:50px;padding-top:20px;text-align:center;color:#666;font-size:13px}
+.summary-box{background:#f0fdf4;color:#000;padding:22px;border-radius:4px;margin:22px 0;border:2px solid #16a34a}
+.summary-title{font-weight:700;font-size:16px;margin-bottom:12px;color:#16a34a}
+.summary-text{font-size:14px;line-height:1.9;color:#000}
+ul,ol{margin:12px 0 12px 25px;color:#000}
+ul li,ol li{margin:8px 0;color:#000;font-size:14px}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="notebook-lines">
+
+<div class="header">
+<div class="title">Haute Disponibilité</div>
+<div class="by-author">by ikram</div>
+<div class="tagline">Concepts fondamentaux, architecture et implémentation</div>
+</div>
+
+<div class="toc">
+<div class="toc-title">📋 Sommaire</div>
+<ol class="toc-list">
+<li><a href="#s1">Haute Disponibilité</a></li>
+<li><a href="#s2">Redondance</a></li>
+<li><a href="#s3">Cluster</a></li>
+<li><a href="#s4">Failover</a></li>
+<li><a href="#s5">VIP - Adresse IP Virtuelle</a></li>
+<li><a href="#s6">Load Balancer</a></li>
+<li><a href="#s7">Réplication de données</a></li>
+<li><a href="#s8">Multi-Zone et Multi-Région</a></li>
+<li><a href="#s9">Auto Scaling</a></li>
+<li><a href="#s10">Monitoring et alertes</a></li>
+<li><a href="#s11">Corosync et Pacemaker</a></li>
+<li><a href="#s12">Implémentation pratique</a></li>
+</ol>
+</div>
+
+<div class="section">
+<div class="section-title" id="s1">
+<span class="section-number">1</span>
+Haute Disponibilité
+</div>
+<div class="section-content">
+<div class="paragraph">
+La <span class="highlight-fr">Haute Disponibilité (HA)</span> est la capacité d'un service à rester accessible et fonctionnel malgré une panne matérielle, réseau, stockage ou logicielle.
+</div>
+<div class="definition">
+<span class="definition-label">Traduction</span>
+Français: Haute Disponibilité | Anglais: High Availability
+</div>
+<div class="key-concept">
+<span class="key-concept-title">Objectif principal</span>
+Zéro interruption de service — l'utilisateur ne doit jamais percevoir une panne.
+</div>
+<div class="paragraph">
+Sans HA, une infrastructure repose sur un serveur unique. Si ce serveur tombe, le service s'arrête complètement. C'est un <span class="highlight-fr">Single Point of Failure</span>.
+</div>
+<div class="diagram-box">SANS HA:
+  Utilisateur → Serveur unique ❌
+  Résultat: Service DOWN
+
+AVEC HA:
+  Utilisateur → Serveur 1 ✅
+           → Serveur 2 ✅
+  Résultat: Service continue</div>
+<div class="paragraph">
+La Haute Disponibilité repose sur quatre piliers: <span class="highlight-fr">redondance, failover automatique, monitoring continu et réplication de données</span>.
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title" id="s2">
+<span class="section-number">2</span>
+Redondance
+</div>
+<div class="section-content">
+<div class="paragraph">
+La redondance signifie ne pas dépendre d'une seule ressource. Au lieu d'un seul serveur, on en déploie plusieurs. Au lieu d'un seul disque, on en réplique les données.
+</div>
+<div class="key-concept">
+<span class="key-concept-title">Types de redondance</span>
+<ul>
+<li><span class="highlight-fr">Serveurs Web:</span> Web1, Web2, Web3</li>
+<li><span class="highlight-fr">Bases de données:</span> DB Primary, DB Replica</li>
+<li><span class="highlight-fr">Stockage:</span> Disk1, Disk2 (RAID)</li>
+<li><span class="highlight-fr">Réseau:</span> Plusieurs connexions WAN</li>
+</ul>
+</div>
+<div class="definition">
+<span class="definition-label">Bénéfice</span>
+Si une ressource tombe, les autres continuent. Le service n'est jamais interrompu.
+</div>
+<div class="example">
+Exemple: Database Master/Replica
+  DB Primary (productif) ↓
+  Basculement automatique
+  DB Replica (devient Primary) ↑
+  Données synchronisées = pas de perte
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title" id="s3">
+<span class="section-number">3</span>
+Cluster
+</div>
+<div class="section-content">
+<div class="paragraph">
+Un <span class="highlight-fr">cluster</span> est un groupe de plusieurs machines (appelées nœuds ou <span class="highlight-fr">nodes</span>) connectées par un réseau et travaillant ensemble comme un seul système.
+</div>
+<div class="definition">
+<span class="definition-label">Nœud (Node)</span>
+Une machine individuelle dans le cluster. Elle peut être Master (actif) ou Backup (en attente).
+</div>
+<div class="key-concept">
+<span class="key-concept-title">Avantages d'un cluster</span>
+<ul>
+<li>Haute disponibilité</li>
+<li>Tolérance aux pannes</li>
+<li>Scalabilité horizontale</li>
+<li>Amélioration des performances</li>
+<li>Sécurité des données</li>
+</ul>
+</div>
+<div class="diagram-box">      CLUSTER
+      /      \
+   Node1    Node2
+   MASTER   BACKUP
+   (actif)  (attente)</div>
+<div class="paragraph">
+Chaque nœud dispose de ses propres ressources (CPU, RAM, disque) mais partage un objectif commun: assurer la continuité du service.
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title" id="s4">
+<span class="section-number">4</span>
+Failover (Basculement automatique)
+</div>
+<div class="section-content">
+<div class="paragraph">
+Le <span class="highlight-fr">failover</span> est le transfert automatique d'une charge de travail d'un serveur défaillant vers un serveur de secours sans intervention manuelle.
+</div>
+<div class="definition">
+<span class="definition-label">Basculement</span>
+Processus automatique qui détecte une panne et transfère le service à une machine opérationnelle.
+</div>
+<div class="key-concept">
+<span class="key-concept-title">Processus du failover</span>
+1. Détection de la panne (Corosync)<br>
+2. Décision de basculement (Pacemaker)<br>
+3. Migration du service<br>
+4. Reprise du service sur le nouveau nœud
+</div>
+<div class="diagram-box">Node 1: ACTIVE ✅
+  ├── Apache
+  └── VIP 192.168.1.100
+
+Node 1 TOMBE ❌
+  ↓ Failover
+Node 2 ACTIVE ✅
+  ├── Apache
+  └── VIP 192.168.1.100
+  ↓
+Utilisateur n'a rien remarqué</div>
+<div class="paragraph">
+Le failover est automatique et transparent. L'utilisateur continue à utiliser la même adresse IP et ne perçoit aucune interruption.
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title" id="s5">
+<span class="section-number">5</span>
+VIP - Adresse IP Virtuelle
+</div>
+<div class="section-content">
+<div class="paragraph">
+Une <span class="highlight-fr">VIP (Virtual IP Address)</span> est une adresse IP qui n'est pas attachée physiquement à une machine. Elle peut se déplacer automatiquement d'un nœud à un autre lors d'une panne.
+</div>
+<div class="key-concept">
+<span class="key-concept-title">Intérêt de la VIP</span>
+L'utilisateur accède toujours à la même adresse IP, indépendamment du serveur qui l'héberge.
+</div>
+<div class="diagram-box">Infrastructure:
+  Node 1: 192.168.1.11
+  Node 2: 192.168.1.10
+  VIP:    192.168.1.100
+
+Client utilise: 192.168.1.100
+Peu importe lequel des Node l'héberge</div>
+<div class="example">
+Scénario sans VIP:
+  Client → 192.168.1.11
+  Panne du serveur
+  Client doit découvrir la nouvelle IP ❌
+
+Avec VIP:
+  Client → 192.168.1.100
+  Panne du nœud
+  VIP migre automatiquement
+  Client continue sans changement ✅
+</div>
+<div class="paragraph">
+La VIP est toujours associée au nœud Master (nœud actif). En cas de failover, la VIP bascule vers le nouveau Master.
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title" id="s6">
+<span class="section-number">6</span>
+Load Balancer
+</div>
+<div class="section-content">
+<div class="paragraph">
+Un <span class="highlight-fr">Load Balancer</span> (équilibreur de charge) distribue le trafic entrant entre plusieurs serveurs pour éviter une surcharge sur un seul serveur.
+</div>
+<div class="definition">
+<span class="definition-label">Fonction</span>
+Répartir les requêtes utilisateurs sur plusieurs serveurs backend de manière équilibrée.
+</div>
+<div class="diagram-box">      Load Balancer
+       /    |    \
+      /     |     \
+   Web1   Web2   Web3
+   ✅      ✅      ✅
+
+Requête 1 → Web1
+Requête 2 → Web2
+Requête 3 → Web3</div>
+<div class="key-concept">
+<span class="key-concept-title">Avantages</span>
+<ul>
+<li>Réduction de la surcharge</li>
+<li>Amélioration des performances</li>
+<li>Tolérance aux pannes accrue</li>
+<li>Scalabilité horizontale</li>
+</ul>
+</div>
+<div class="paragraph">
+Si un serveur tombe, le Load Balancer le retire automatiquement de la rotation et envoie les nouvelles requêtes aux serveurs restants.
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title" id="s7">
+<span class="section-number">7</span>
+Réplication de données
+</div>
+<div class="section-content">
+<div class="paragraph">
+La <span class="highlight-fr">réplication</span> consiste à copier les données d'un serveur vers d'autres serveurs en temps réel ou quasi-réel.
+</div>
+<div class="definition">
+<span class="definition-label">Objectif</span>
+Maintenir les données synchronisées pour que plusieurs serveurs puissent servir les mêmes données.
+</div>
+<div class="key-concept">
+<span class="key-concept-title">Deux modes</span>
+<div style="margin-top:10px">
+<div style="margin:10px 0"><span class="highlight-fr">Synchrone:</span> Les données sont écrites immédiatement sur tous les replicas. Plus sûr mais plus lent.</div>
+<div><span class="highlight-fr">Asynchrone:</span> Léger délai avant la réplication. Plus rapide mais risque minimal de divergence.</div>
+</div>
+</div>
+<div class="diagram-box">DB PRIMARY (actif)
+  ↓ Réplication
+DB REPLICA (standby)
+  ↓ Synchronisée
+Basculement possible sans perte</div>
+<div class="example">
+Configuration Master/Slave:
+  Master reçoit écritures
+  Slave reçoit réplication
+  Slave peut basculer pour lectures
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title" id="s8">
+<span class="section-number">8</span>
+Multi-Zone et Multi-Région
+</div>
+<div class="section-content">
+<div class="paragraph">
+<span class="highlight-fr">Multi-Zone</span> signifie déployer une application dans plusieurs zones de disponibilité d'un même data center. <span class="highlight-fr">Multi-Région</span> signifie la déployer dans plusieurs régions géographiques.
+</div>
+<div class="key-concept">
+<span class="key-concept-title">Différence</span>
+<ul>
+<li><span class="highlight-fr">Multi-Zone:</span> Même région, zones différentes (km)</li>
+<li><span class="highlight-fr">Multi-Région:</span> Régions géographiques différentes (100+ km)</li>
+</ul>
+</div>
+<div class="diagram-box">MULTI-ZONE:
+  Zone A: App + DB
+  Zone B: App + DB
+  Zone A ❌ → Zone B ✅
+
+MULTI-RÉGION:
+  Région Paris (Primary)
+  Région Londres (Backup)
+  Paris ❌ → Londres ✅</div>
+<div class="paragraph">
+Multi-Région protège contre les catastrophes. Si un data center entier s'effondre, l'application continue dans une autre région.
+</div>
+<div class="note">
+Le <span class="highlight-fr">Disaster Recovery</span> (DR) est la capacité à se rétablir rapidement après une catastrophe majeure.
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title" id="s9">
+<span class="section-number">9</span>
+Auto Scaling
+</div>
+<div class="section-content">
+<div class="paragraph">
+L'<span class="highlight-fr">Auto Scaling</span> est la capacité du système à augmenter ou diminuer automatiquement le nombre de serveurs en fonction de la charge.
+</div>
+<div class="definition">
+<span class="definition-label">Fonctionnement</span>
+Quand la charge augmente, des serveurs supplémentaires sont automatiquement activés. Quand elle diminue, les serveurs inutilisés sont arrêtés.
+</div>
+<div class="diagram-box">Charge normale:  Web1, Web2
+Charge élevée:   Web1, Web2, Web3, Web4
+Charge basse:    Web1
+
+Décision basée sur:
+  - CPU > 80% → ajouter serveurs
+  - CPU < 20% → retirer serveurs</div>
+<div class="key-concept">
+<span class="key-concept-title">Bénéfices</span>
+<ul>
+<li>Optimisation des coûts (payer ce qu'on utilise)</li>
+<li>Amélioration des performances</li>
+<li>Résilience accrue</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title" id="s10">
+<span class="section-number">10</span>
+Monitoring et alertes
+</div>
+<div class="section-content">
+<div class="paragraph">
+Le <span class="highlight-fr">monitoring</span> est la surveillance continue de l'état des serveurs, services et applications. C'est le fondement de toute infrastructure HA.
+</div>
+<div class="key-concept">
+<span class="key-concept-title">Métriques surveillées</span>
+<ul>
+<li>CPU (utilisation du processeur)</li>
+<li>RAM (mémoire)</li>
+<li>Disque (espace de stockage)</li>
+<li>Réseau (bande passante)</li>
+<li>Services (Apache, MySQL, etc.)</li>
+<li>Application (requêtes/sec, erreurs)</li>
+</ul>
+</div>
+<div class="definition">
+<span class="definition-label">Alerte</span>
+Notification automatique envoyée quand une métrique dépasse un seuil critique.
+</div>
+<div class="diagram-box">Monitoring détecte CPU = 99%
+  ↓
+Alerte automatique
+  ↓
+Admin notifié
+  ↓
+Action préventive ou Failover auto</div>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr>
+<th>Outil</th>
+<th>Cas d'usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CloudWatch</td>
+<td>Monitoring AWS natif</td>
+</tr>
+<tr>
+<td>Zabbix</td>
+<td>Infrastructure entière (hybride/on-premise)</td>
+</tr>
+<tr>
+<td>Prometheus</td>
+<td>Métriques applicatives (microservices)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="paragraph">
+Sans monitoring, on ne sait pas si le système fonctionne jusqu'au moment où les utilisateurs se plaignent.
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title" id="s11">
+<span class="section-number">11</span>
+Corosync et Pacemaker
+</div>
+<div class="section-content">
+<div class="paragraph">
+<span class="highlight-fr">Corosync</span> et <span class="highlight-fr">Pacemaker</span> sont les deux composants clés d'une infrastructure HA Linux. Ils travaillent ensemble pour assurer le failover automatique.
+</div>
+<div class="key-concept">
+<span class="key-concept-title">Corosync</span>
+<ul>
+<li>Assure la communication entre les nœuds</li>
+<li>Détecte les pannes des nœuds</li>
+<li>Maintient le consensus du cluster</li>
+<li>Prévient les partitions réseau</li>
+</ul>
+</div>
+<div class="definition">
+<span class="definition-label">Corosync = Communication + Détection</span>
+C'est le système nerveux du cluster qui observe tous les nœuds et détecte les problèmes.
+</div>
+<div class="key-concept">
+<span class="key-concept-title">Pacemaker</span>
+<ul>
+<li>Gère les ressources du cluster</li>
+<li>Définit les politiques de failover</li>
+<li>Orchestration des services</li>
+<li>Prend les décisions basées sur les informations de Corosync</li>
+</ul>
+</div>
+<div class="definition">
+<span class="definition-label">Pacemaker = Gestionnaire + Décideur</span>
+C'est le chef d'orchestre qui prend les décisions et fait migrer les services.
+</div>
+<div class="diagram-box">Corosync détecte une panne
+  ↓
+Corosync notifie Pacemaker
+  ↓
+Pacemaker décide: Basculer les ressources
+  ↓
+Pacemaker migre VIP + Services
+  ↓
+Nouveau nœud devient Master</div>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr>
+<th>Composant</th>
+<th>Rôle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Corosync</td>
+<td>Communication + Détection</td>
+</tr>
+<tr>
+<td>Pacemaker</td>
+<td>Gestion HA + Failover</td>
+</tr>
+<tr>
+<td>pcs</td>
+<td>Outil admin (configuration)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title" id="s12">
+<span class="section-number">12</span>
+Implémentation pratique
+</div>
+<div class="section-content">
+<div class="paragraph">
+Une implémentation HA típique sur Linux avec Corosync, Pacemaker et Apache.
+</div>
+<div class="key-concept">
+<span class="key-concept-title">Architecture</span>
+Node1 (192.168.1.11) MASTER → Apache + VIP<br>
+Node2 (192.168.1.10) BACKUP → Apache<br>
+VIP = 192.168.1.100<br>
+</div>
+<div class="diagram-box">CLIENT
+  ↓
+192.168.1.100 (VIP)
+  ↓
+  ├─ Node1 ACTIVE (Apache)
+  └─ Node2 BACKUP (Apache)
+
+Corosync (communication)
+Pacemaker (gestion)</div>
+<div class="definition">
+<span class="definition-label">Resource</span>
+Une ressource est un service ou une ressource système gérée par Pacemaker (ex: Apache, VIP, MySQL).
+</div>
+<div class="key-concept">
+<span class="key-concept-title">Étapes de configuration</span>
+<ol>
+<li>Installer Corosync et Pacemaker sur tous les nœuds</li>
+<li>Configurer Corosync pour la communication entre nœuds</li>
+<li>Démarrer le cluster: pcs cluster start --all</li>
+<li>Vérifier l'état: pcs status</li>
+<li>Créer les ressources (VIP, Apache)</li>
+<li>Ajouter des contraintes (ex: VIP + Apache sur même nœud)</li>
+<li>Tester le failover</li>
+</ol>
+</div>
+<div class="example">
+Commande de vérification:
+  $ pcs status
+  Cluster name: mycluster
+  Stack: corosync
+  Current DC: node1
+  Version: 2.0.x
+  Nodes: 2
+  Resources: VIP, Apache
+</div>
+<div class="paragraph">
+Quand Node1 tombe, Corosync le détecte, Pacemaker bascule la VIP et Apache vers Node2 en quelques secondes.
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">
+<span class="section-number">✓</span>
+Synthèse globale
+</div>
+<div class="section-content">
+<div class="summary-box">
+<div class="summary-title">La Haute Disponibilité en trois mots</div>
+<div class="summary-text">
+1. <span class="highlight-fr">Redondance:</span> Plusieurs ressources au lieu d'une seule<br>
+2. <span class="highlight-fr">Failover:</span> Basculement automatique en cas de panne<br>
+3. <span class="highlight-fr">Monitoring:</span> Surveillance continue pour détecter les problèmes
+</div>
+</div>
+<div class="diagram-box">OBJECTIF: Zéro interruption de service
+
+MOYENS:
+  ├─ Redondance (serveurs, data, réseau)
+  ├─ Failover automatique (Corosync + Pacemaker)
+  ├─ VIP (adresse IP mobile)
+  ├─ Load Balancing (répartition de charge)
+  ├─ Réplication (données synchronisées)
+  ├─ Multi-Zone/Région (protection géographique)
+  └─ Monitoring 24/7 (surveillance continue)
+
+RÉSULTAT: Service continue même en cas de panne</div>
+<div class="paragraph">
+La HA n'est pas une technologie unique, c'est une <span class="highlight-fr">architecture</span> construite avec plusieurs composants travaillant ensemble.
+</div>
+</div>
+</div>
+
+<div class="footer">
+Cours complet - Haute Disponibilité | Document généré pour étude systématique
+</div>
+
+</div>
+</div>
+</body>
+</html>
